@@ -1670,18 +1670,26 @@
                             <input type="number" id="awardingAmount" class="form-control" placeholder="Enter amount" min="0" step="1000" required>
                         </div>
                         
-                 <div class="form-group">
-    <label for="physicalProgress"><i class="fas fa-tasks"></i> Physical Progress (%)</label>
-    <input type="text" id="physicalProgress" list="progressList" class="form-control" placeholder="Select the Progress Level" required>
-    <datalist id="progressList">
-        <option value="1 - Not Started">
-        <option value="1-10 Procurement Stage">
-        <option value="10-25 Awarding Stage">
-        <option value="25-50 Work Done upto 50%">
-        <option value="50-75 Bill Paying Starting Stage">
-        <option value="75-95 - Final Billing Stage">
-        <option value="100 - Retention Paid">
-    </datalist>
+                <div class="form-group">
+  <label for="physicalProgress"><i class="fas fa-tasks"></i> Physical Progress (%)</label>
+  <input type="text" id="physicalProgress" list="progressList" class="form-control" placeholder="Select the Progress Level" required>
+  <datalist id="progressList">
+    <option value="5% - Estimate Prepared (01)">
+    <option value="10% - Estimate Approved (02)">
+    <option value="15% - Bid Document Prepared (03)">
+    <option value="20% - Bid Called (04)">
+    <option value="25% - Bid Closed (05)">
+    <option value="30% - TEC Appointed (06)">
+    <option value="35% - TEC Completed (07)">
+    <option value="40% - Procurement Decision Taken (08)">
+    <option value="45% - Appeal Period (09)">
+    <option value="50% - Job Awarded (10)">
+    <option value="55% - 25% of Job Completed (11)">
+    <option value="60% - 50% of Job Completed (12)">
+    <option value="80% - 75% of Job Completed (13)">
+    <option value="95% - 95% of Job Completed (14)">
+    <option value="100% - Job Handed Over to the Client (15)">
+  </datalist>
 </div>
                     
                     <div class="form-row">
@@ -3349,5 +3357,6 @@ document.addEventListener('DOMContentLoaded', function() {
 </body>
 
 </html>
+
 
 

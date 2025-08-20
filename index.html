@@ -1624,28 +1624,60 @@
                         </div>
                         
                         <div class="form-group">
-                            <label for="vote"><i class="fas fa-file-invoice"></i> Vote Number *</label>
-                            <input type="text" id="vote" list="voteList" class="form-control" placeholder="Select or enter vote number" required>
-                            <datalist id="voteList">
-                                <option value="111-1-5-2001(11) Building Rehabilitation-Hospital">
-                                <option value="111-1-5-2002(11) Service and Maintenance-Hospital">
-                                <option value="111-1-5-2103(11) Machinery Purchasing-Hospitals">
-                                <option value="111-1-5-0-1409-138(11) Service and Maintenance Agreements-Hospital & Other Institutions">
-                                <option value="111-2-26-2001(11) Building Rehabilitation-Other Health Institutions">
-                                <option value="111-2-26-2002(11) Service and Maintenance-Other Health Institutions">
-                                <option value="111-2-26-2103(11) Machinery Purchasing-Other Health Institutions">
-                                <option value="111-2-20-001-2001(11) Building Rehabilitation-NTS">
-                                <option value="111-2-20-002-2002(11) Service and Maintenance-NTS">
-                                <option value="111-2-20-002-2103(11) Machinery Purchasing-NTS">
-                                <option value="111-2-26-008-2001(11) Strengthening Primary Level Health Care">
-                                <option value="111-1-2-2001(11) Building and Structures- Ministry Administration">
-                                <option value="111-1-1-2001(11) Building and Structures- Minister Office">
-                                <option value="111-1-1-2002(11) Plant, Machinery & Equipment Service & Maintenance - Minister Office">
-                                <option value="111-1-2-2002(11) Plant, Machinery & Equipment Service & Maintenance - Ministry Administration">
-                                <option value="111-1-2-2103(11) Plant, Machinery & Equipment Purchasing - Ministry Administration">
-                            </datalist>
-                        </div>
-                    </div>
+  <label for="vote"><i class="fas fa-file-invoice"></i> Vote Number *</label>
+  <select id="vote" class="form-control" required>
+    <option value="">-- Select Vote Number --</option>
+    <option value="111-1-5-2001(11) Building Rehabilitation-Hospital">
+      111-1-5-2001(11) Building Rehabilitation-Hospital
+    </option>
+    <option value="111-1-5-2002(11) Service and Maintenance-Hospital">
+      111-1-5-2002(11) Service and Maintenance-Hospital
+    </option>
+    <option value="111-1-5-2103(11) Machinery Purchasing-Hospitals">
+      111-1-5-2103(11) Machinery Purchasing-Hospitals
+    </option>
+    <option value="111-1-5-0-1409-138(11) Service and Maintenance Agreements-Hospital & Other Institutions">
+      111-1-5-0-1409-138(11) Service and Maintenance Agreements-Hospital & Other Institutions
+    </option>
+    <option value="111-2-26-2001(11) Building Rehabilitation-Other Health Institutions">
+      111-2-26-2001(11) Building Rehabilitation-Other Health Institutions
+    </option>
+    <option value="111-2-26-2002(11) Service and Maintenance-Other Health Institutions">
+      111-2-26-2002(11) Service and Maintenance-Other Health Institutions
+    </option>
+    <option value="111-2-26-2103(11) Machinery Purchasing-Other Health Institutions">
+      111-2-26-2103(11) Machinery Purchasing-Other Health Institutions
+    </option>
+    <option value="111-2-20-001-2001(11) Building Rehabilitation-NTS">
+      111-2-20-001-2001(11) Building Rehabilitation-NTS
+    </option>
+    <option value="111-2-20-002-2002(11) Service and Maintenance-NTS">
+      111-2-20-002-2002(11) Service and Maintenance-NTS
+    </option>
+    <option value="111-2-20-002-2103(11) Machinery Purchasing-NTS">
+      111-2-20-002-2103(11) Machinery Purchasing-NTS
+    </option>
+    <option value="111-2-26-008-2001(11) Strengthening Primary Level Health Care">
+      111-2-26-008-2001(11) Strengthening Primary Level Health Care
+    </option>
+    <option value="111-1-2-2001(11) Building and Structures- Ministry Administration">
+      111-1-2-2001(11) Building and Structures- Ministry Administration
+    </option>
+    <option value="111-1-1-2001(11) Building and Structures- Minister Office">
+      111-1-1-2001(11) Building and Structures- Minister Office
+    </option>
+    <option value="111-1-1-2002(11) Plant, Machinery & Equipment Service & Maintenance - Minister Office">
+      111-1-1-2002(11) Plant, Machinery & Equipment Service & Maintenance - Minister Office
+    </option>
+    <option value="111-1-2-2002(11) Plant, Machinery & Equipment Service & Maintenance - Ministry Administration">
+      111-1-2-2002(11) Plant, Machinery & Equipment Service & Maintenance - Ministry Administration
+    </option>
+    <option value="111-1-2-2103(11) Plant, Machinery & Equipment Purchasing - Ministry Administration">
+      111-1-2-2103(11) Plant, Machinery & Equipment Purchasing - Ministry Administration
+    </option>
+  </select>
+</div>
+
                     
                     <div class="form-group">
                         <label for="jobDescription"><i class="fas fa-file-alt"></i> Job Description *</label>
@@ -1670,27 +1702,28 @@
                             <input type="number" id="awardingAmount" class="form-control" placeholder="Enter amount" min="0" step="1000" required>
                         </div>
                         
-                <div class="form-group">
+              <div class="form-group">
   <label for="physicalProgress"><i class="fas fa-tasks"></i> Physical Progress (%)</label>
-  <input type="text" id="physicalProgress" list="progressList" class="form-control" placeholder="Select the Progress Level" required>
-  <datalist id="progressList">
-    <option value="5% - Estimate Prepared (01)">
-    <option value="10% - Estimate Approved (02)">
-    <option value="15% - Bid Document Prepared (03)">
-    <option value="20% - Bid Called (04)">
-    <option value="25% - Bid Closed (05)">
-    <option value="30% - TEC Appointed (06)">
-    <option value="35% - TEC Completed (07)">
-    <option value="40% - Procurement Decision Taken (08)">
-    <option value="45% - Appeal Period (09)">
-    <option value="50% - Job Awarded (10)">
-    <option value="55% - 25% of Job Completed (11)">
-    <option value="60% - 50% of Job Completed (12)">
-    <option value="80% - 75% of Job Completed (13)">
-    <option value="95% - 95% of Job Completed (14)">
-    <option value="100% - Job Handed Over to the Client (15)">
-  </datalist>
+  <select id="physicalProgress" class="form-control" required>
+    <option value="">-- Select the Progress Level --</option>
+    <option value="5% - Estimate Prepared (01)">5% - Estimate Prepared (01)</option>
+    <option value="10% - Estimate Approved (02)">10% - Estimate Approved (02)</option>
+    <option value="15% - Bid Document Prepared (03)">15% - Bid Document Prepared (03)</option>
+    <option value="20% - Bid Called (04)">20% - Bid Called (04)</option>
+    <option value="25% - Bid Closed (05)">25% - Bid Closed (05)</option>
+    <option value="30% - TEC Appointed (06)">30% - TEC Appointed (06)</option>
+    <option value="35% - TEC Completed (07)">35% - TEC Completed (07)</option>
+    <option value="40% - Procurement Decision Taken (08)">40% - Procurement Decision Taken (08)</option>
+    <option value="45% - Appeal Period (09)">45% - Appeal Period (09)</option>
+    <option value="50% - Job Awarded (10)">50% - Job Awarded (10)</option>
+    <option value="55% - 25% of Job Completed (11)">55% - 25% of Job Completed (11)</option>
+    <option value="60% - 50% of Job Completed (12)">60% - 50% of Job Completed (12)</option>
+    <option value="80% - 75% of Job Completed (13)">80% - 75% of Job Completed (13)</option>
+    <option value="95% - 95% of Job Completed (14)">95% - 95% of Job Completed (14)</option>
+    <option value="100% - Job Handed Over to the Client (15)">100% - Job Handed Over to the Client (15)</option>
+  </select>
 </div>
+
                     
                     <div class="form-row">
                         <div class="form-group">
@@ -3357,6 +3390,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </body>
 
 </html>
+
 
 
 

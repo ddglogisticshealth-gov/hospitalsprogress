@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title> Deputy Director General (Logistics) Hospital Project Management System</title>
@@ -1295,12 +1293,18 @@ input[list]::-webkit-calendar-picker-indicator {
                 <div class="user-info">
                     <span id="userInfo">Logged in as: Admin</span>
                     <div class="user-avatar" id="userAvatar">A</div>
+                    <!-- New buttons added here -->
+                    <button class="btn btn-outline" onclick="window.open('https://script.google.com/macros/s/AKfycbyq12-8bmBgOgixpinM9ENC2-WPW8UBD2-8I7DibGn-eyEVS2na0Wyas6kEkzEmDG4lFQ/exec', '_blank')">
+                        <i class="fas fa-envelope"></i> Messaging
+                    </button>
+                    <button class="btn btn-outline" onclick="window.location.href='#'">
+                        <i class="fas fa-file-invoice"></i> Bills In Hand
+                    </button>
                     <button class="btn btn-secondary" onclick="logout()">
                         <i class="fas fa-sign-out-alt"></i> Logout
                     </button>
                 </div>
-            </div>
-            
+            </div>           
             <div class="nav-tabs">
                 <div class="nav-tab active" onclick="showSection('dashboard')">
                     <i class="fas fa-tachometer-alt"></i> Dashboard
@@ -1732,6 +1736,7 @@ input[list]::-webkit-calendar-picker-indicator {
             </div>
         </div>
     </div>
+    
     
      <script>
         // Global variables
@@ -3344,6 +3349,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </body>
 
 </html>
+
 
 
 

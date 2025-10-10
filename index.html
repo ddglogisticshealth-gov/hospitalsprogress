@@ -817,6 +817,161 @@ tr:hover {
     margin-top: 20px;
 }
 
+/* Reports Section */
+.reports-container {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 25px;
+    margin-top: 20px;
+}
+
+.reports-filters {
+    background: white;
+    border-radius: 18px;
+    padding: 25px;
+    box-shadow: var(--card-shadow);
+    transition: var(--transition);
+}
+
+.reports-filters:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+}
+
+.reports-results {
+    background: white;
+    border-radius: 18px;
+    padding: 25px;
+    box-shadow: var(--card-shadow);
+    transition: var(--transition);
+}
+
+.reports-results:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+}
+
+.report-type-selector {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.report-type-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px;
+    border: 2px solid var(--light-gray);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.report-type-option:hover {
+    border-color: var(--primary);
+    background: rgba(44, 111, 187, 0.05);
+}
+
+.report-type-option.active {
+    border-color: var(--primary);
+    background: rgba(44, 111, 187, 0.1);
+}
+
+.report-type-option i {
+    font-size: 1.5rem;
+    color: var(--primary);
+}
+
+.report-type-option .option-content h4 {
+    color: var(--dark);
+    margin-bottom: 5px;
+}
+
+.report-type-option .option-content p {
+    color: var(--gray);
+    font-size: 0.9rem;
+}
+
+.report-filters {
+    margin-top: 20px;
+}
+
+.filter-section {
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--light-gray);
+}
+
+.filter-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.filter-section h4 {
+    color: var(--primary);
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.date-range-inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.report-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.report-actions .btn {
+    flex: 1;
+    justify-content: center;
+}
+
+/* Report Results */
+.report-results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--light-gray);
+}
+
+.report-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.report-summary-card {
+    background: var(--light);
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+}
+
+.report-summary-card h4 {
+    color: var(--primary);
+    margin-bottom: 8px;
+    font-size: 1rem;
+}
+
+.report-summary-card .value {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+}
+
 /* Animations */
 @keyframes fadeIn {
     from { opacity: 0; }
@@ -1066,6 +1221,10 @@ input[list]::-webkit-calendar-picker-indicator {
         grid-template-columns: 1fr;
     }
     
+    .reports-container {
+        grid-template-columns: 1fr;
+    }
+    
     .modal-content {
         width: 98%;
         max-width: none;
@@ -1156,6 +1315,14 @@ input[list]::-webkit-calendar-picker-indicator {
     .section {
         padding: 20px;
     }
+    
+    .date-range-inputs {
+        grid-template-columns: 1fr;
+    }
+    
+    .report-actions {
+        flex-direction: column;
+    }
 }
 
 @media (max-width: 480px) {
@@ -1197,6 +1364,8 @@ input[list]::-webkit-calendar-picker-indicator {
                 <select id="hospitalName" class="form-control" required>
                     <option value="">Select Hospital/User</option>
                     <option value="admin">Administrator</option>
+
+		    
                     <option value="Ministry of Health">Ministry of Health</option>
                     <option value="National Hospital Sri Lanka">National Hospital Sri Lanka</option>
                     <option value="Colombo South Teaching Hospital">Colombo South Teaching Hospital</option>
@@ -1265,6 +1434,7 @@ input[list]::-webkit-calendar-picker-indicator {
                     <option value="Anti Filariasis Campaign">Anti Filariasis Campaign</option>
                     <option value="Medical Supplies Division">Medical Supplies Division</option>
                     <option value="Public Health Veterinary Services">Public Health Veterinary Services</option>
+		    
                 </select>
             </div>
             <div class="form-group">
@@ -1317,6 +1487,9 @@ input[list]::-webkit-calendar-picker-indicator {
                 </div>
                 <div class="nav-tab hidden" id="votesTab" onclick="showSection('votes')">
                     <i class="fas fa-file-invoice-dollar"></i> Vote Summary
+                </div>
+                <div class="nav-tab hidden" id="reportsTab" onclick="showSection('reports')">
+                    <i class="fas fa-file-alt"></i> Reports
                 </div>
             </div>
         </header>
@@ -1493,10 +1666,154 @@ input[list]::-webkit-calendar-picker-indicator {
                 </div>
             </div>
         </div>
+        
+        <!-- Reports Section -->
+        <div class="section hidden" id="reportsSection">
+            <div class="dashboard-header">
+                <h2><i class="fas fa-file-alt"></i> Reports</h2>
+                <button class="btn btn-outline" onclick="exportReportToExcel()">
+                    <i class="fas fa-file-export"></i> Export Report to Excel
+                </button>
+            </div>
+            
+            <div class="reports-container">
+                <div class="reports-filters">
+                    <h3><i class="fas fa-filter"></i> Report Filters</h3>
+                    
+                    <div class="report-type-selector">
+                        <div class="report-type-option active" data-type="hospital">
+                            <i class="fas fa-hospital"></i>
+                            <div class="option-content">
+                                <h4>Hospital Report</h4>
+                                <p>Detailed projects by hospital</p>
+                            </div>
+                        </div>
+                        <div class="report-type-option" data-type="vote">
+                            <i class="fas fa-file-invoice-dollar"></i>
+                            <div class="option-content">
+                                <h4>Vote Report</h4>
+                                <p>Projects grouped by vote number</p>
+                            </div>
+                        </div>
+                        <div class="report-type-option" data-type="progress">
+                            <i class="fas fa-tasks"></i>
+                            <div class="option-content">
+                                <h4>Progress Report</h4>
+                                <p>Projects by progress status</p>
+                            </div>
+                        </div>
+                        <div class="report-type-option" data-type="financial">
+                            <i class="fas fa-money-bill-wave"></i>
+                            <div class="option-content">
+                                <h4>Financial Report</h4>
+                                <p>Financial overview and analysis</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="report-filters">
+                        <div class="filter-section">
+                            <h4><i class="fas fa-hospital"></i> Hospital</h4>
+                            <div class="form-group">
+                                <select id="reportHospitalFilter" class="form-control" multiple style="height: 120px;">
+                                    <!-- Options will be populated dynamically -->
+                                </select>
+                                <div style="margin-top: 8px;">
+                                    <button type="button" class="btn btn-outline" style="padding: 5px 10px; font-size: 0.8rem;" onclick="selectAllHospitals()">Select All</button>
+                                    <button type="button" class="btn btn-outline" style="padding: 5px 10px; font-size: 0.8rem;" onclick="deselectAllHospitals()">Deselect All</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="filter-section">
+                            <h4><i class="fas fa-file-invoice-dollar"></i> Vote Number</h4>
+                            <div class="form-group">
+                                <select id="reportVoteFilter" class="form-control" multiple style="height: 120px;">
+                                    <!-- Options will be populated dynamically -->
+                                </select>
+                                <div style="margin-top: 8px;">
+                                    <button type="button" class="btn btn-outline" style="padding: 5px 10px; font-size: 0.8rem;" onclick="selectAllVotes()">Select All</button>
+                                    <button type="button" class="btn btn-outline" style="padding: 5px 10px; font-size: 0.8rem;" onclick="deselectAllVotes()">Deselect All</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="filter-section">
+                            <h4><i class="fas fa-tasks"></i> Progress Status</h4>
+                            <div class="form-group">
+                                <select id="reportProgressFilter" class="form-control" multiple style="height: 120px;">
+                                    <option value="0-25">0-25%</option>
+                                    <option value="26-50">26-50%</option>
+                                    <option value="51-75">51-75%</option>
+                                    <option value="76-99">76-99%</option>
+                                    <option value="100">Completed (100%)</option>
+                                </select>
+                                <div style="margin-top: 8px;">
+                                    <button type="button" class="btn btn-outline" style="padding: 5px 10px; font-size: 0.8rem;" onclick="selectAllProgress()">Select All</button>
+                                    <button type="button" class="btn btn-outline" style="padding: 5px 10px; font-size: 0.8rem;" onclick="deselectAllProgress()">Deselect All</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="filter-section">
+                            <h4><i class="fas fa-calendar"></i> Date Range</h4>
+                            <div class="date-range-inputs">
+                                <div class="form-group">
+                                    <label for="reportStartDate">Start Date</label>
+                                    <input type="date" id="reportStartDate" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label for="reportEndDate">End Date</label>
+                                    <input type="date" id="reportEndDate" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+<!-- Add this to the reports section after the existing filters -->
+<div class="filter-section">
+    <h4><i class="fas fa-filter"></i> Detailed Hospital Report</h4>
+    <div class="form-group">
+        <label for="detailedHospitalReport">Generate Detailed Report for Specific Hospital</label>
+        <select id="detailedHospitalReport" class="form-control">
+            <option value="">-- Select Hospital for Detailed Report --</option>
+            <!-- Options will be populated dynamically -->
+        </select>
+    </div>
+    <button class="btn btn-outline" onclick="generateDetailedHospitalReport()" style="width: 100%; margin-top: 10px;">
+        <i class="fas fa-file-medical"></i> Generate Detailed Hospital Report
+    </button>
+</div>
+                    
+                    <div class="report-actions">
+                        <button class="btn" onclick="generateReport()">
+                            <i class="fas fa-cogs"></i> Generate Report
+                        </button>
+                        <button class="btn btn-outline" onclick="resetReportFilters()">
+                            <i class="fas fa-redo"></i> Reset
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="reports-results">
+                    <div class="report-results-header">
+                        <h3 id="reportTitle">Hospital Report</h3>
+                        <span id="reportDateRange"></span>
+                    </div>
+                    
+                    <div id="reportSummary" class="report-summary">
+                        <!-- Summary statistics will be populated here -->
+                    </div>
+                    
+                    <div id="reportResults" class="table-container">
+                        <!-- Report results table will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-
-    <!-- Project Modal -->
+      <!-- Project Modal -->
     <div class="modal" id="projectModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -1645,43 +1962,42 @@ input[list]::-webkit-calendar-picker-indicator {
                     <div class="form-row">
                         <div class="form-group">
                             <label for="allocationAmount"><i class="fas fa-money-bill-wave"></i> Allocation Amount (Rs.) *</label>
-                            <input type="number" id="allocationAmount" class="form-control" placeholder="Enter amount" min="0" step="1000" required>
+                            <input type="number" id="allocationAmount" class="form-control" placeholder="Enter amount" min="0" step="1000">
                         </div>
                         
                         <div class="form-group">
                             <label for="estimateAmount"><i class="fas fa-calculator"></i> Estimate Amount (Rs.) *</label>
-                            <input type="number" id="estimateAmount" class="form-control" placeholder="Enter amount" min="0" step="1000" required>
+                            <input type="number" id="estimateAmount" class="form-control" placeholder="Enter amount" min="0" step="1000">
                         </div>
                     </div>
                     
                     <div class="form-row">
                         <div class="form-group">
                             <label for="awardingAmount"><i class="fas fa-award"></i> Awarding Amount (Rs.) *</label>
-                            <input type="number" id="awardingAmount" class="form-control" placeholder="Enter amount" min="0" step="1000" required>
+                            <input type="number" id="awardingAmount" class="form-control" placeholder="Enter amount" min="0" step="1000">
                         </div>
                         
-              <div class="form-group">
+             <div class="form-group">
   <label for="physicalProgress"><i class="fas fa-tasks"></i> Physical Progress (%)</label>
   <select id="physicalProgress" class="form-control" required>
     <option value="">-- Select the Progress Level --</option>
-    <option value="5% - Estimate Prepared (01)">5% - Estimate Prepared (01)</option>
-    <option value="10% - Estimate Approved (02)">10% - Estimate Approved (02)</option>
-    <option value="15% - Bid Document Prepared (03)">15% - Bid Document Prepared (03)</option>
-    <option value="20% - Bid Called (04)">20% - Bid Called (04)</option>
-    <option value="25% - Bid Closed (05)">25% - Bid Closed (05)</option>
-    <option value="30% - TEC Appointed (06)">30% - TEC Appointed (06)</option>
-    <option value="35% - TEC Completed (07)">35% - TEC Completed (07)</option>
-    <option value="40% - Procurement Decision Taken (08)">40% - Procurement Decision Taken (08)</option>
-    <option value="45% - Appeal Period (09)">45% - Appeal Period (09)</option>
-    <option value="50% - Job Awarded (10)">50% - Job Awarded (10)</option>
-    <option value="55% - 25% of Job Completed (11)">55% - 25% of Job Completed (11)</option>
-    <option value="60% - 50% of Job Completed (12)">60% - 50% of Job Completed (12)</option>
-    <option value="80% - 75% of Job Completed (13)">80% - 75% of Job Completed (13)</option>
-    <option value="95% - 95% of Job Completed (14)">95% - 95% of Job Completed (14)</option>
-    <option value="100% - Job Handed Over to the Client (15)">100% - Job Handed Over to the Client (15)</option>
+    <option value="5">5% - Estimate Prepared (01)</option>
+    <option value="10">10% - Estimate Approved (02)</option>
+    <option value="15">15% - Bid Document Prepared (03)</option>
+    <option value="20">20% - Bid Called (04)</option>
+    <option value="25">25% - Bid Closed (05)</option>
+    <option value="30">30% - TEC Appointed (06)</option>
+    <option value="35">35% - TEC Completed (07)</option>
+    <option value="40">40% - Procurement Decision Taken (08)</option>
+    <option value="45">45% - Appeal Period (09)</option>
+    <option value="50">50% - Job Awarded (10)</option>
+    <option value="55">55% - 25% of Job Completed (11)</option>
+    <option value="60">60% - 50% of Job Completed (12)</option>
+    <option value="80">80% - 75% of Job Completed (13)</option>
+    <option value="95">95% - 95% of Job Completed (14)</option>
+    <option value="100">100% - Job Handed Over to the Client (15)</option>
   </select>
 </div>
-
                     
                     <div class="form-row">
                         <div class="form-group">
@@ -1736,9 +2052,8 @@ input[list]::-webkit-calendar-picker-indicator {
             </div>
         </div>
     </div>
-    
-    
-     <script>
+        
+    <script>
         // Global variables
 let currentUser = null;
 let projects = [];
@@ -1829,7 +2144,8 @@ function showSection(section) {
     document.getElementById('dashboardSection').classList.add('hidden');
     document.getElementById('formsSection').classList.add('hidden');
     document.getElementById('analyticsSection').classList.add('hidden');
-    document.getElementById('votesSection').classList.add('hidden'); // Added this line
+    document.getElementById('votesSection').classList.add('hidden');
+    document.getElementById('reportsSection').classList.add('hidden');
     
     // Remove active class from all tabs
     document.querySelectorAll('.nav-tab').forEach(tab => {
@@ -1848,10 +2164,14 @@ function showSection(section) {
         document.getElementById('analyticsSection').classList.remove('hidden');
         document.querySelector('[onclick="showSection(\'analytics\')"]').classList.add('active');
         loadAnalytics();
-    } else if (section === 'votes') { // Added this section
+    } else if (section === 'votes') {
         document.getElementById('votesSection').classList.remove('hidden');
         document.querySelector('[onclick="showSection(\'votes\')"]').classList.add('active');
         loadVoteDashboard();
+    } else if (section === 'reports') {
+        document.getElementById('reportsSection').classList.remove('hidden');
+        document.querySelector('[onclick="showSection(\'reports\')"]').classList.add('active');
+        loadReportsSection();
     }
 }
 
@@ -1861,7 +2181,7 @@ const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwiiglRhOGEyxiJ
 // Predefined user credentials
 const USERS = {
     'admin': { password: 'admin123', type: 'admin', name: 'Administrator' },
-    // Hospitals and Institutions with unique 4-character passwords
+     // Hospitals and Institutions with unique 4-character passwords
     'Ministry of Health': { password: 'MOH1', type: 'hospital', name: 'Ministry of Health' },
     'National Hospital Sri Lanka': { password: 'NY70', type: 'hospital', name: 'National Hospital Sri Lanka' },
     'Colombo South Teaching Hospital': { password: 'FL51', type: 'hospital', name: 'Colombo South Teaching Hospital' },
@@ -1959,12 +2279,14 @@ async function login() {
             if (currentUser.type === 'admin') {
                 document.getElementById('adminFilters').classList.remove('hidden');
                 document.getElementById('analyticsTab').classList.remove('hidden');
-                document.getElementById('votesTab').classList.remove('hidden'); // Show votes tab for admin
+                document.getElementById('votesTab').classList.remove('hidden');
+                document.getElementById('reportsTab').classList.remove('hidden');
                 populateHospitalFilter();
             } else {
                 document.getElementById('adminFilters').classList.add('hidden');
                 document.getElementById('analyticsTab').classList.add('hidden');
-                document.getElementById('votesTab').classList.add('hidden'); // Hide votes tab for hospitals
+                document.getElementById('votesTab').classList.add('hidden');
+                document.getElementById('reportsTab').classList.add('hidden');
             }
             
             // Load dashboard
@@ -2365,12 +2687,21 @@ function saveProjectLocally(formData) {
         // Update existing project
         const index = projects.findIndex(p => p.id === editingProject.id);
         if (index !== -1) {
-            projects[index] = { ...formData, id: editingProject.id, createdDate: projects[index].createdDate };
+            projects[index] = { 
+                ...projects[index], // Keep existing properties
+                ...formData, // Update with new form data
+                id: editingProject.id, // Preserve ID
+                createdDate: projects[index].createdDate // Preserve creation date
+            };
         }
     } else {
         // Add new project
         const newId = Math.max(...projects.map(p => p.id), 0) + 1;
-        projects.push({ ...formData, id: newId, createdDate: new Date() });
+        projects.push({ 
+            ...formData, 
+            id: newId, 
+            createdDate: new Date() 
+        });
     }
     
     displayStats();
@@ -2379,22 +2710,30 @@ function saveProjectLocally(formData) {
     alert('Project saved successfully!');
 }
 
-// Get form data
+// Get form data - FIXED to properly handle physical progress
 function getFormData() {
+    const getNumericValue = (id) => {
+        const val = document.getElementById(id).value.trim();
+        // Return 0 if field is blank, otherwise convert to number
+        if (val === "") return 0;
+        const num = Number(val);
+        return isNaN(num) ? 0 : num;
+    };
+
     return {
         hospitalNameForm: document.getElementById('hospitalNameForm').value,
         vote: document.getElementById('vote').value,
-        allocationAmount: parseFloat(document.getElementById('allocationAmount').value) || 0,
         jobDescription: document.getElementById('jobDescription').value,
-        estimateAmount: parseFloat(document.getElementById('estimateAmount').value) || 0,
-        awardingAmount: parseFloat(document.getElementById('awardingAmount').value) || 0,
-        physicalProgress: parseFloat(document.getElementById('physicalProgress').value) || 0,
-        advanceAmount: parseFloat(document.getElementById('advanceAmount').value) || 0,
-        bill1: parseFloat(document.getElementById('bill1').value) || 0,
-        bill2: parseFloat(document.getElementById('bill2').value) || 0,
-        bill3: parseFloat(document.getElementById('bill3').value) || 0,
-        bill4: parseFloat(document.getElementById('bill4').value) || 0,
-        bill5: parseFloat(document.getElementById('bill5').value) || 0,
+        allocationAmount: getNumericValue('allocationAmount'),
+        estimateAmount: getNumericValue('estimateAmount'),
+        awardingAmount: getNumericValue('awardingAmount'),
+        advanceAmount: getNumericValue('advanceAmount'),
+        physicalProgress: getNumericValue('physicalProgress'), // FIXED: This was returning empty string
+        bill1: getNumericValue('bill1'),
+        bill2: getNumericValue('bill2'),
+        bill3: getNumericValue('bill3'),
+        bill4: getNumericValue('bill4'),
+        bill5: getNumericValue('bill5'),
         remark: document.getElementById('remark').value
     };
 }
@@ -2601,7 +2940,7 @@ function editProject(id) {
     document.getElementById('jobDescription').value = project.jobDescription;
     document.getElementById('estimateAmount').value = project.estimateAmount;
     document.getElementById('awardingAmount').value = project.awardingAmount;
-    document.getElementById('physicalProgress').value = project.physicalProgress;
+    document.getElementById('physicalProgress').value = project.physicalProgress; // FIXED: This should populate the value
     document.getElementById('advanceAmount').value = project.advanceAmount || '';
     document.getElementById('bill1').value = project.bill1 || '';
     document.getElementById('bill2').value = project.bill2 || '';
@@ -3206,119 +3545,847 @@ function exportVoteSummaryToExcel() {
             let vote = voteData[voteKey];
             vote.progress = vote.weight > 0 ? (vote.progressTotal / vote.weight) : 0;
         });
-        
-        // Convert to array
+                // Convert to array for export
         const voteSummary = Object.values(voteData);
         
         // Prepare data for export
-        const dataForExport = voteSummary.map(vote => ({
+        const exportData = voteSummary.map(vote => ({
             'Vote Number': vote.vote,
-            'Projects': vote.projects,
-            'Allocation (Rs.)': vote.allocation,
-            'Awarded (Rs.)': vote.awarded,
-            'Bills Paid (Rs.)': vote.bills,
-            'Progress (%)': vote.progress.toFixed(1)
+            'Number of Projects': vote.projects,
+            'Total Allocation (Rs.)': vote.allocation,
+            'Total Awarded (Rs.)': vote.awarded,
+            'Total Bills Paid (Rs.)': vote.bills,
+            'Weighted Progress (%)': vote.progress.toFixed(1)
         }));
+
+        // Create workbook and worksheet
+        const workbook = XLSX.utils.book_new();
+        const worksheet = XLSX.utils.json_to_sheet(exportData);
+
+        // Add worksheet to workbook
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Vote Summary');
+
+        // Generate filename and download
+        const filename = `Vote_Summary_${new Date().toISOString().split('T')[0]}.xlsx`;
+        XLSX.writeFile(workbook, filename);
         
-        // Create worksheet
-        const ws = XLSX.utils.json_to_sheet(dataForExport);
-        
-        // Create workbook
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "Vote Summary");
-        
-        // Generate filename
-        const filename = 'Vote_Summary.xlsx';
-        
-        // Write and download file
-        XLSX.writeFile(wb, filename);
-        
-        console.log('Vote summary Excel export successful');
-        alert('Vote summary exported successfully!');
     } catch (error) {
-        console.error('Vote summary export error:', error);
-        alert('Vote summary export failed: ' + error.message);
+        console.error('Vote export error:', error);
+        alert('Error exporting vote summary: ' + error.message);
     } finally {
         showLoading(false);
     }
 }
 
-// Logout function
-function logout() {
-    if (confirm('Are you sure you want to logout?')) {
-        currentUser = null;
-        projects = [];
-        filteredProjects = [];
-        
-        // Reset charts
-        if (hospitalChart) hospitalChart.destroy();
-        if (progressChart) progressChart.destroy();
-        if (financialChart) financialChart.destroy();
-        if (progressDistributionChart) progressDistributionChart.destroy();
-        if (voteChart) voteChart.destroy();
-        
-        // Reset filters
-        document.getElementById('voteFilter').innerHTML = '<option value="">All Votes</option>';
-        
-        document.getElementById('mainApp').classList.add('hidden');
-        document.getElementById('loginForm').classList.remove('hidden');
-        document.getElementById('hospitalName').value = '';
-        document.getElementById('password').value = '';
-        
-        // Show dashboard by default
-        showSection('dashboard');
-    }
+// Load Reports Section
+function loadReportsSection() {
+    if (!currentUser || currentUser.type !== 'admin') return;
+    
+    // Populate hospital filter
+    const hospitalFilter = document.getElementById('reportHospitalFilter');
+    hospitalFilter.innerHTML = '';
+    hospitals.forEach(hospital => {
+        const option = document.createElement('option');
+        option.value = hospital;
+        option.textContent = hospital;
+        hospitalFilter.appendChild(option);
+    });
+    
+    // Populate vote filter
+    const voteFilter = document.getElementById('reportVoteFilter');
+    voteFilter.innerHTML = '';
+    const votes = [...new Set(projects.map(p => p.vote))];
+    votes.forEach(vote => {
+        const option = document.createElement('option');
+        option.value = vote;
+        option.textContent = vote;
+        voteFilter.appendChild(option);
+    });
+    
+    // Populate detailed hospital report dropdown
+    populateDetailedHospitalReport();
+    
+    // Set up report type selection
+    document.querySelectorAll('.report-type-option').forEach(option => {
+        option.addEventListener('click', function() {
+            document.querySelectorAll('.report-type-option').forEach(opt => {
+                opt.classList.remove('active');
+            });
+            this.classList.add('active');
+        });
+    });
 }
 
-// Loading indicator functions
-function showLoading(show) {
-    const loadingIndicator = document.getElementById('loadingIndicator');
-    if (show) {
-        loadingIndicator.style.display = 'flex';
-    } else {
-        loadingIndicator.style.display = 'none';
-    }
+// Report filter helper functions
+function selectAllHospitals() {
+    const hospitalFilter = document.getElementById('reportHospitalFilter');
+    Array.from(hospitalFilter.options).forEach(option => {
+        option.selected = true;
+    });
 }
 
-// Enhanced form validation
-function validateForm(data) {
-    const requiredFields = [
-        { field: 'hospitalNameForm', name: 'Hospital Name' },
-        { field: 'vote', name: 'Vote' },
-        { field: 'jobDescription', name: 'Job Description' },
-        { field: 'allocationAmount', name: 'Allocation Amount' },
-        { field: 'estimateAmount', name: 'Estimate Amount' },
-        { field: 'awardingAmount', name: 'Awarding Amount' },
-        { field: 'physicalProgress', name: 'Physical Progress' }
-    ];
+function deselectAllHospitals() {
+    const hospitalFilter = document.getElementById('reportHospitalFilter');
+    Array.from(hospitalFilter.options).forEach(option => {
+        option.selected = false;
+    });
+}
 
-    for (const req of requiredFields) {
-        if (data[req.field] === undefined || data[req.field] === null || data[req.field] === '') {
-            alert(`Please fill in ${req.name}`);
-            return false;
-        }
-    }
+function selectAllVotes() {
+    const voteFilter = document.getElementById('reportVoteFilter');
+    Array.from(voteFilter.options).forEach(option => {
+        option.selected = true;
+    });
+}
 
-    // Validate numeric fields
-    const numericFields = ['allocationAmount', 'estimateAmount', 'awardingAmount', 'physicalProgress',
-                        'advanceAmount', 'bill1', 'bill2', 'bill3', 'bill4', 'bill5'];
-    for (const field of numericFields) {
-        if (data[field] !== undefined && data[field] !== null && data[field] !== '') {
-            if (isNaN(data[field]) || data[field] < 0) {
-                alert(`${field} must be a valid positive number`);
+function deselectAllVotes() {
+    const voteFilter = document.getElementById('reportVoteFilter');
+    Array.from(voteFilter.options).forEach(option => {
+        option.selected = false;
+    });
+}
+
+function selectAllProgress() {
+    const progressFilter = document.getElementById('reportProgressFilter');
+    Array.from(progressFilter.options).forEach(option => {
+        option.selected = true;
+    });
+}
+
+function deselectAllProgress() {
+    const progressFilter = document.getElementById('reportProgressFilter');
+    Array.from(progressFilter.options).forEach(option => {
+        option.selected = false;
+    });
+}
+
+function resetReportFilters() {
+    deselectAllHospitals();
+    deselectAllVotes();
+    deselectAllProgress();
+    document.getElementById('reportStartDate').value = '';
+    document.getElementById('reportEndDate').value = '';
+}
+
+// Generate Report Function
+function generateReport() {
+    try {
+        showLoading(true);
+        
+        // Get selected report type
+        const reportType = document.querySelector('.report-type-option.active').dataset.type;
+        
+        // Get filter values
+        const selectedHospitals = Array.from(document.getElementById('reportHospitalFilter').selectedOptions)
+            .map(option => option.value);
+        const selectedVotes = Array.from(document.getElementById('reportVoteFilter').selectedOptions)
+            .map(option => option.value);
+        const selectedProgress = Array.from(document.getElementById('reportProgressFilter').selectedOptions)
+            .map(option => option.value);
+        const startDate = document.getElementById('reportStartDate').value;
+        const endDate = document.getElementById('reportEndDate').value;
+        
+        // Filter projects based on criteria
+        let filteredProjects = projects.filter(project => {
+            // Hospital filter
+            if (selectedHospitals.length > 0 && !selectedHospitals.includes(project.hospitalNameForm)) {
                 return false;
             }
-        }
+            
+            // Vote filter
+            if (selectedVotes.length > 0 && !selectedVotes.includes(project.vote)) {
+                return false;
+            }
+            
+            // Progress filter
+            if (selectedProgress.length > 0) {
+                let matchesProgress = false;
+                selectedProgress.forEach(range => {
+                    if (range === '100') {
+                        if (project.physicalProgress === 100) matchesProgress = true;
+                    } else if (range === '0-25') {
+                        if (project.physicalProgress >= 0 && project.physicalProgress <= 25) matchesProgress = true;
+                    } else if (range === '26-50') {
+                        if (project.physicalProgress >= 26 && project.physicalProgress <= 50) matchesProgress = true;
+                    } else if (range === '51-75') {
+                        if (project.physicalProgress >= 51 && project.physicalProgress <= 75) matchesProgress = true;
+                    } else if (range === '76-99') {
+                        if (project.physicalProgress >= 76 && project.physicalProgress <= 99) matchesProgress = true;
+                    }
+                });
+                if (!matchesProgress) return false;
+            }
+            
+            // Date filter
+            if (startDate && project.createdDate < new Date(startDate)) {
+                return false;
+            }
+            if (endDate && project.createdDate > new Date(endDate)) {
+                return false;
+            }
+            
+            return true;
+        });
+        
+        // Generate report based on type
+        generateReportByType(reportType, filteredProjects);
+        
+    } catch (error) {
+        console.error('Report generation error:', error);
+        alert('Error generating report: ' + error.message);
+    } finally {
+        showLoading(false);
     }
+}
 
-    // Validate progress percentage
-    if (data.physicalProgress < 0 || data.physicalProgress > 100) {
+// Generate specific report types
+function generateReportByType(type, filteredProjects) {
+    // Update report title and date range
+    const reportTitles = {
+        'hospital': 'Hospital Report',
+        'vote': 'Vote Report',
+        'progress': 'Progress Report',
+        'financial': 'Financial Report'
+    };
+    
+    document.getElementById('reportTitle').textContent = reportTitles[type];
+    
+    const startDate = document.getElementById('reportStartDate').value;
+    const endDate = document.getElementById('reportEndDate').value;
+    let dateRangeText = 'All Time';
+    if (startDate || endDate) {
+        dateRangeText = `${startDate || 'Start'} to ${endDate || 'End'}`;
+    }
+    document.getElementById('reportDateRange').textContent = dateRangeText;
+    
+    // Generate summary statistics
+    generateReportSummary(filteredProjects);
+    
+    // Generate detailed results based on report type
+    switch(type) {
+        case 'hospital':
+            generateHospitalReport(filteredProjects);
+            break;
+        case 'vote':
+            generateVoteReport(filteredProjects);
+            break;
+        case 'progress':
+            generateProgressReport(filteredProjects);
+            break;
+        case 'financial':
+            generateFinancialReport(filteredProjects);
+            break;
+    }
+}
+
+// Generate report summary
+function generateReportSummary(filteredProjects) {
+    const totalProjects = filteredProjects.length;
+    const completedProjects = filteredProjects.filter(p => p.physicalProgress === 100).length;
+    const totalAllocation = filteredProjects.reduce((sum, p) => sum + p.allocationAmount, 0);
+    const totalAwarded = filteredProjects.reduce((sum, p) => sum + p.awardingAmount, 0);
+    const totalBills = filteredProjects.reduce((sum, p) => {
+        return sum + (p.bill1 || 0) + (p.bill2 || 0) + (p.bill3 || 0) + (p.bill4 || 0) + (p.bill5 || 0);
+    }, 0);
+    const avgProgress = totalProjects > 0 ? 
+        filteredProjects.reduce((sum, p) => sum + p.physicalProgress, 0) / totalProjects : 0;
+
+    document.getElementById('reportSummary').innerHTML = `
+        <div class="report-summary-card">
+            <h4>Total Projects</h4>
+            <div class="value">${totalProjects}</div>
+        </div>
+        <div class="report-summary-card">
+            <h4>Completed</h4>
+            <div class="value">${completedProjects}</div>
+        </div>
+        <div class="report-summary-card">
+            <h4>Total Allocation</h4>
+            <div class="value">Rs. ${(totalAllocation/1000000).toFixed(1)}M</div>
+        </div>
+        <div class="report-summary-card">
+            <h4>Total Awarded</h4>
+            <div class="value">Rs. ${(totalAwarded/1000000).toFixed(1)}M</div>
+        </div>
+        <div class="report-summary-card">
+            <h4>Total Payments</h4>
+            <div class="value">Rs. ${(totalBills/1000000).toFixed(1)}M</div>
+        </div>
+        <div class="report-summary-card">
+            <h4>Avg Progress</h4>
+            <div class="value">${avgProgress.toFixed(1)}%</div>
+        </div>
+    `;
+}
+
+// Generate Hospital Report
+function generateHospitalReport(projects) {
+    // Group by hospital
+    const hospitalData = {};
+    projects.forEach(project => {
+        if (!hospitalData[project.hospitalNameForm]) {
+            hospitalData[project.hospitalNameForm] = {
+                hospital: project.hospitalNameForm,
+                projects: 0,
+                allocation: 0,
+                awarded: 0,
+                bills: 0,
+                progress: 0,
+                progressTotal: 0,
+                weight: 0
+            };
+        }
+        
+        let hospital = hospitalData[project.hospitalNameForm];
+        hospital.projects++;
+        hospital.allocation += project.allocationAmount;
+        hospital.awarded += project.awardingAmount;
+        hospital.bills += (project.bill1 || 0) + (project.bill2 || 0) + (project.bill3 || 0) +
+                         (project.bill4 || 0) + (project.bill5 || 0);
+        hospital.progressTotal += project.physicalProgress * project.allocationAmount;
+        hospital.weight += project.allocationAmount;
+    });
+    
+    // Calculate weighted progress
+    Object.keys(hospitalData).forEach(hospitalKey => {
+        let hospital = hospitalData[hospitalKey];
+        hospital.progress = hospital.weight > 0 ? (hospital.progressTotal / hospital.weight) : 0;
+    });
+    
+    const hospitalSummary = Object.values(hospitalData);
+    
+    // Create table
+    let tableHTML = `
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr>
+                    <th>Hospital Name</th>
+                    <th>Projects</th>
+                    <th>Allocation (Rs.)</th>
+                    <th>Awarded (Rs.)</th>
+                    <th>Bills Paid (Rs.)</th>
+                    <th>Progress (%)</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+    
+    hospitalSummary.forEach(hospital => {
+        tableHTML += `
+            <tr>
+                <td>${hospital.hospital}</td>
+                <td>${hospital.projects}</td>
+                <td>${hospital.allocation.toLocaleString()}</td>
+                <td>${hospital.awarded.toLocaleString()}</td>
+                <td>${hospital.bills.toLocaleString()}</td>
+                <td>${hospital.progress.toFixed(1)}</td>
+            </tr>
+        `;
+    });
+    
+    tableHTML += `</tbody></table>`;
+    document.getElementById('reportResults').innerHTML = tableHTML;
+}
+
+// Generate Vote Report
+function generateVoteReport(projects) {
+    // Group by vote (similar to hospital report but by vote)
+    const voteData = {};
+    projects.forEach(project => {
+        if (!voteData[project.vote]) {
+            voteData[project.vote] = {
+                vote: project.vote,
+                projects: 0,
+                allocation: 0,
+                awarded: 0,
+                bills: 0,
+                progress: 0,
+                progressTotal: 0,
+                weight: 0
+            };
+        }
+        
+        let vote = voteData[project.vote];
+        vote.projects++;
+        vote.allocation += project.allocationAmount;
+        vote.awarded += project.awardingAmount;
+        vote.bills += (project.bill1 || 0) + (project.bill2 || 0) + (project.bill3 || 0) +
+                     (project.bill4 || 0) + (project.bill5 || 0);
+        vote.progressTotal += project.physicalProgress * project.allocationAmount;
+        vote.weight += project.allocationAmount;
+    });
+    
+    // Calculate weighted progress
+    Object.keys(voteData).forEach(voteKey => {
+        let vote = voteData[voteKey];
+        vote.progress = vote.weight > 0 ? (vote.progressTotal / vote.weight) : 0;
+    });
+    
+    const voteSummary = Object.values(voteData);
+    
+    // Create table
+    let tableHTML = `
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr>
+                    <th>Vote Number</th>
+                    <th>Projects</th>
+                    <th>Allocation (Rs.)</th>
+                    <th>Awarded (Rs.)</th>
+                    <th>Bills Paid (Rs.)</th>
+                    <th>Progress (%)</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+    
+    voteSummary.forEach(vote => {
+        tableHTML += `
+            <tr>
+                <td style="font-size: 0.8rem;">${vote.vote}</td>
+                <td>${vote.projects}</td>
+                <td>${vote.allocation.toLocaleString()}</td>
+                <td>${vote.awarded.toLocaleString()}</td>
+                <td>${vote.bills.toLocaleString()}</td>
+                <td>${vote.progress.toFixed(1)}</td>
+            </tr>
+        `;
+    });
+    
+    tableHTML += `</tbody></table>`;
+    document.getElementById('reportResults').innerHTML = tableHTML;
+}
+
+// Generate Progress Report
+function generateProgressReport(projects) {
+    // Group by progress ranges
+    const progressRanges = [
+        { label: '0-25%', min: 0, max: 25 },
+        { label: '26-50%', min: 26, max: 50 },
+        { label: '51-75%', min: 51, max: 75 },
+        { label: '76-99%', min: 76, max: 99 },
+        { label: '100% (Completed)', min: 100, max: 100 }
+    ];
+    
+    const progressData = progressRanges.map(range => {
+        const rangeProjects = projects.filter(p => 
+            p.physicalProgress >= range.min && p.physicalProgress <= range.max
+        );
+        
+        const allocation = rangeProjects.reduce((sum, p) => sum + p.allocationAmount, 0);
+        const awarded = rangeProjects.reduce((sum, p) => sum + p.awardingAmount, 0);
+        const bills = rangeProjects.reduce((sum, p) => 
+            sum + (p.bill1 || 0) + (p.bill2 || 0) + (p.bill3 || 0) + (p.bill4 || 0) + (p.bill5 || 0), 0);
+        
+        return {
+            range: range.label,
+            projects: rangeProjects.length,
+            allocation: allocation,
+            awarded: awarded,
+            bills: bills
+        };
+    });
+    
+    // Create table
+    let tableHTML = `
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr>
+                    <th>Progress Range</th>
+                    <th>Projects</th>
+                    <th>Allocation (Rs.)</th>
+                    <th>Awarded (Rs.)</th>
+                    <th>Bills Paid (Rs.)</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+    
+    progressData.forEach(data => {
+        tableHTML += `
+            <tr>
+                <td>${data.range}</td>
+                <td>${data.projects}</td>
+                <td>${data.allocation.toLocaleString()}</td>
+                <td>${data.awarded.toLocaleString()}</td>
+                <td>${data.bills.toLocaleString()}</td>
+            </tr>
+        `;
+    });
+    
+    tableHTML += `</tbody></table>`;
+    document.getElementById('reportResults').innerHTML = tableHTML;
+}
+
+// Generate Financial Report
+function generateFinancialReport(projects) {
+    // Create detailed financial table
+    let tableHTML = `
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr>
+                    <th>Hospital</th>
+                    <th>Vote</th>
+                    <th>Job Description</th>
+                    <th>Allocation (Rs.)</th>
+                    <th>Estimate (Rs.)</th>
+                    <th>Awarded (Rs.)</th>
+                    <th>Advance (Rs.)</th>
+                    <th>Bills Paid (Rs.)</th>
+                    <th>Balance (Rs.)</th>
+                    <th>Progress</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+    
+    projects.forEach(project => {
+        const totalBills = (project.bill1 || 0) + (project.bill2 || 0) + (project.bill3 || 0) +
+                          (project.bill4 || 0) + (project.bill5 || 0);
+        const balance = project.awardingAmount - totalBills;
+        
+        tableHTML += `
+            <tr>
+                <td>${project.hospitalNameForm}</td>
+                <td style="font-size: 0.8rem;">${project.vote}</td>
+                <td>${project.jobDescription}</td>
+                <td>${project.allocationAmount.toLocaleString()}</td>
+                <td>${project.estimateAmount.toLocaleString()}</td>
+                <td>${project.awardingAmount.toLocaleString()}</td>
+                <td>${(project.advanceAmount || 0).toLocaleString()}</td>
+                <td>${totalBills.toLocaleString()}</td>
+                <td style="color: ${balance < 0 ? 'red' : 'green'}">${balance.toLocaleString()}</td>
+                <td>${project.physicalProgress}%</td>
+            </tr>
+        `;
+    });
+    
+    tableHTML += `</tbody></table>`;
+    document.getElementById('reportResults').innerHTML = tableHTML;
+}
+
+// Export Report to Excel - FIXED
+function exportReportToExcel() {
+    try {
+        showLoading(true);
+        
+        // Get the current report results
+        const reportTitle = document.getElementById('reportTitle').textContent;
+        const reportTable = document.getElementById('reportResults').querySelector('table');
+        
+        if (!reportTable) {
+            alert('No report data to export');
+            return;
+        }
+        
+        // Convert table to worksheet
+        const workbook = XLSX.utils.book_new();
+        const worksheet = XLSX.utils.table_to_sheet(reportTable);
+        
+        // FIX: Truncate sheet name to 31 characters and remove invalid characters
+        let sheetName = reportTitle
+            .replace(/[^a-zA-Z0-9\s]/g, '') // Remove special characters
+            .substring(0, 31) // Truncate to 31 characters
+            .trim(); // Remove any trailing spaces
+        
+        // If sheet name is empty after cleaning, use a default name
+        if (!sheetName) {
+            sheetName = 'Report';
+        }
+        
+        // Add worksheet to workbook
+        XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
+        
+        // Generate filename and download
+        const filename = `${reportTitle.replace(/[^a-zA-Z0-9]/g, '_')}_${new Date().toISOString().split('T')[0]}.xlsx`;
+        XLSX.writeFile(workbook, filename);
+        
+    } catch (error) {
+        console.error('Report export error:', error);
+        alert('Error exporting report: ' + error.message);
+    } finally {
+        showLoading(false);
+    }
+}
+
+// Add this function to generate detailed hospital reports
+function generateDetailedHospitalReport() {
+    try {
+        showLoading(true);
+        
+        const selectedHospital = document.getElementById('detailedHospitalReport').value;
+        if (!selectedHospital) {
+            alert('Please select a hospital for the detailed report');
+            return;
+        }
+        
+        // Filter projects for the selected hospital
+        const hospitalProjects = projects.filter(project => 
+            project.hospitalNameForm === selectedHospital
+        );
+        
+        if (hospitalProjects.length === 0) {
+            alert('No projects found for the selected hospital');
+            return;
+        }
+        
+        // Update report display
+        document.getElementById('reportTitle').textContent = `Detailed Report - ${selectedHospital}`;
+        document.getElementById('reportDateRange').textContent = 'All Projects';
+        
+        // Generate comprehensive summary
+        generateDetailedHospitalSummary(hospitalProjects, selectedHospital);
+        
+        // Generate detailed project list
+        generateDetailedProjectTable(hospitalProjects);
+        
+    } catch (error) {
+        console.error('Detailed hospital report error:', error);
+        alert('Error generating detailed report: ' + error.message);
+    } finally {
+        showLoading(false);
+    }
+}
+
+// Generate detailed hospital summary
+function generateDetailedHospitalSummary(projects, hospitalName) {
+    const totalProjects = projects.length;
+    const completedProjects = projects.filter(p => p.physicalProgress === 100).length;
+    const ongoingProjects = totalProjects - completedProjects;
+    
+    const totalAllocation = projects.reduce((sum, p) => sum + p.allocationAmount, 0);
+    const totalAwarded = projects.reduce((sum, p) => sum + p.awardingAmount, 0);
+    const totalBills = projects.reduce((sum, p) => {
+        return sum + (p.bill1 || 0) + (p.bill2 || 0) + (p.bill3 || 0) + 
+               (p.bill4 || 0) + (p.bill5 || 0);
+    }, 0);
+    
+    const totalAdvance = projects.reduce((sum, p) => sum + (p.advanceAmount || 0), 0);
+    const avgProgress = totalProjects > 0 ? 
+        projects.reduce((sum, p) => sum + p.physicalProgress, 0) / totalProjects : 0;
+    
+    // Calculate progress distribution
+    const progressRanges = [
+        { label: '0-25%', min: 0, max: 25, count: 0 },
+        { label: '26-50%', min: 26, max: 50, count: 0 },
+        { label: '51-75%', min: 51, max: 75, count: 0 },
+        { label: '76-99%', min: 76, max: 99, count: 0 },
+        { label: '100%', min: 100, max: 100, count: 0 }
+    ];
+    
+    projects.forEach(project => {
+        progressRanges.forEach(range => {
+            if (project.physicalProgress >= range.min && project.physicalProgress <= range.max) {
+                range.count++;
+            }
+        });
+    });
+    
+    document.getElementById('reportSummary').innerHTML = `
+        <div class="hospital-summary">
+            <h3><i class="fas fa-hospital"></i> ${hospitalName} - Comprehensive Overview</h3>
+            <div class="summary-stats">
+                <div>Total Projects: <span>${totalProjects}</span></div>
+                <div>Completed: <span>${completedProjects}</span></div>
+                <div>Ongoing: <span>${ongoingProjects}</span></div>
+                <div>Total Allocation: <span>Rs. ${totalAllocation.toLocaleString()}</span></div>
+                <div>Total Awarded: <span>Rs. ${totalAwarded.toLocaleString()}</span></div>
+                <div>Total Payments: <span>Rs. ${totalBills.toLocaleString()}</span></div>
+                <div>Total Advance: <span>Rs. ${totalAdvance.toLocaleString()}</span></div>
+                <div>Avg Progress: <span>${avgProgress.toFixed(1)}%</span></div>
+            </div>
+            
+            <div style="margin-top: 20px;">
+                <h4><i class="fas fa-chart-pie"></i> Progress Distribution</h4>
+                <div class="summary-stats">
+                    ${progressRanges.map(range => `
+                        <div>${range.label}: <span>${range.count} projects</span></div>
+                    `).join('')}
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// Generate detailed project table
+function generateDetailedProjectTable(projects) {
+    let tableHTML = `
+        <div style="margin-top: 30px;">
+            <h4><i class="fas fa-table"></i> Project Details</h4>
+            <div class="table-container">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th>Vote Number</th>
+                            <th>Job Description</th>
+                            <th>Allocation (Rs.)</th>
+                            <th>Estimate (Rs.)</th>
+                            <th>Awarded (Rs.)</th>
+                            <th>Physical Progress</th>
+                            <th>Advance (Rs.)</th>
+                            <th>Bills Paid (Rs.)</th>
+                            <th>Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+    `;
+    
+    projects.forEach(project => {
+        const totalBills = (project.bill1 || 0) + (project.bill2 || 0) + (project.bill3 || 0) +
+                          (project.bill4 || 0) + (project.bill5 || 0);
+        
+        tableHTML += `
+            <tr>
+                <td style="font-size: 0.8rem;">${project.vote}</td>
+                <td>${project.jobDescription}</td>
+                <td>${project.allocationAmount.toLocaleString()}</td>
+                <td>${project.estimateAmount.toLocaleString()}</td>
+                <td>${project.awardingAmount.toLocaleString()}</td>
+                <td>${project.physicalProgress}%</td>
+                <td>${(project.advanceAmount || 0).toLocaleString()}</td>
+                <td>${totalBills.toLocaleString()}</td>
+                <td>${project.remark || '-'}</td>
+            </tr>
+        `;
+    });
+    
+    tableHTML += `
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById('reportResults').innerHTML = tableHTML;
+}
+
+// Populate detailed hospital report dropdown
+function populateDetailedHospitalReport() {
+    const dropdown = document.getElementById('detailedHospitalReport');
+    if (dropdown.options.length > 1) return;
+    
+    dropdown.innerHTML = '<option value="">-- Select Hospital for Detailed Report --</option>';
+    
+    const hospitalList = [...new Set(projects.map(p => p.hospitalNameForm))];
+    hospitalList.forEach(hospital => {
+        const option = document.createElement('option');
+        option.value = hospital;
+        option.textContent = hospital;
+        dropdown.appendChild(option);
+    });
+}
+
+// Form validation - FIXED to allow zero amounts and properly validate physical progress
+function validateForm(formData) {
+    // Check required fields only
+    if (!formData.hospitalNameForm) {
+        alert('Please select a hospital');
+        return false;
+    }
+    if (!formData.vote) {
+        alert('Please select a vote number');
+        return false;
+    }
+    if (!formData.jobDescription) {
+        alert('Please enter job description');
+        return false;
+    }
+    
+    // Optional fields validation - only validate if provided and allow zero
+    if (formData.allocationAmount < 0) {
+        alert('Allocation amount cannot be negative');
+        return false;
+    }
+    if (formData.estimateAmount < 0) {
+        alert('Estimate amount cannot be negative');
+        return false;
+    }
+    if (formData.awardingAmount < 0) {
+        alert('Awarding amount cannot be negative');
+        return false;
+    }
+    
+    // Physical progress validation - FIXED: Always validate since it's now always a number
+    if (formData.physicalProgress < 0 || formData.physicalProgress > 100) {
         alert('Physical progress must be between 0 and 100');
         return false;
     }
-
+    
+    // Validate financial consistency only if all relevant amounts are provided
+    if (formData.awardingAmount > formData.allocationAmount) {
+        alert('Awarding amount cannot exceed allocation amount');
+        return false;
+    }
+    
+    // Validate optional bill amounts - allow zero but not negative
+    if (formData.advanceAmount < 0) {
+        alert('Advance amount cannot be negative');
+        return false;
+    }
+    if (formData.bill1 < 0) {
+        alert('1st Bill amount cannot be negative');
+        return false;
+    }
+    if (formData.bill2 < 0) {
+        alert('2nd Bill amount cannot be negative');
+        return false;
+    }
+    if (formData.bill3 < 0) {
+        alert('3rd Bill amount cannot be negative');
+        return false;
+    }
+    if (formData.bill4 < 0) {
+        alert('4th Bill amount cannot be negative');
+        return false;
+    }
+    if (formData.bill5 < 0) {
+        alert('5th Bill amount cannot be negative');
+        return false;
+    }
+    
     return true;
 }
+
+// Utility Functions
+function showLoading(show) {
+    document.getElementById('loadingIndicator').style.display = show ? 'flex' : 'none';
+}
+
+function logout() {
+    currentUser = null;
+    projects = [];
+    document.getElementById('mainApp').classList.add('hidden');
+    document.getElementById('loginForm').classList.remove('hidden');
+    document.getElementById('password').value = '';
+}
+
+// Event Listeners
+document.addEventListener('DOMContentLoaded', function() {
+    // Add event listeners for form submission
+    document.getElementById('projectForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        saveProject();
+    });
+    
+    // Add keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+        // Escape key to close modal
+        if (e.key === 'Escape') {
+            closeModal();
+        }
+        
+        // Ctrl+F to focus search
+        if (e.ctrlKey && e.key === 'f') {
+            e.preventDefault();
+            document.getElementById('searchInput').focus();
+        }
+    });
+    
+    // Initialize with sample data for demo
+    if (GAS_WEB_APP_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL') {
+        console.log('Running in demo mode with sample data');
+    }
+});
 
 // Close modal when clicking outside
 window.onclick = function(event) {
@@ -3328,34 +4395,106 @@ window.onclick = function(event) {
     }
 }
 
-// Handle Enter key for login
-document.addEventListener('keypress', function(event) {
-    if (event.key === 'Enter' && !document.getElementById('loginForm').classList.contains('hidden')) {
-        login();
-    }
-});
+// Format currency display
+function formatCurrency(amount) {
+    return new Intl.NumberFormat('en-LK', {
+        style: 'currency',
+        currency: 'LKR',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+    }).format(amount);
+}
 
-// Initialize the application when page loads
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('Hospital Project Management System initialized');
-    
-    // Focus on hospital name dropdown
-    document.getElementById('hospitalName').focus();
-    
-    // Initialize loading indicator as hidden
+// Format percentage display
+function formatPercentage(value) {
+    return new Intl.NumberFormat('en-US', {
+        style: 'percent',
+        minimumFractionDigits: 1,
+        maximumFractionDigits: 1
+    }).format(value / 100);
+}
+
+// Error handling for fetch operations
+async function handleFetchError(response) {
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.json();
+}
+
+// Debounce function for search input
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// Apply debouncing to search input
+const debouncedFilterProjects = debounce(filterProjects, 300);
+document.getElementById('searchInput').addEventListener('input', debouncedFilterProjects);
+
+// Enhanced error handling
+window.addEventListener('error', function(e) {
+    console.error('Global error:', e.error);
     showLoading(false);
 });
-    </script>
+
+window.addEventListener('unhandledrejection', function(e) {
+    console.error('Unhandled promise rejection:', e.reason);
+    showLoading(false);
+});
+
+// Service Worker registration for PWA capabilities (optional)
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/sw.js')
+            .then(function(registration) {
+                console.log('SW registered: ', registration);
+            })
+            .catch(function(registrationError) {
+                console.log('SW registration failed: ', registrationError);
+            });
+    });
+}
+
+// Simple Enter key login - add this anywhere in your script
+document.getElementById('password').addEventListener('keypress', e => e.key === 'Enter' && login());
+
+
+// Export functions for global access
+window.login = login;
+window.logout = logout;
+window.showSection = showSection;
+window.openModal = openModal;
+window.closeModal = closeModal;
+window.saveProject = saveProject;
+window.editProject = editProject;
+window.deleteProject = deleteProject;
+window.filterProjects = filterProjects;
+window.clearSearch = clearSearch;
+window.exportToExcel = exportToExcel;
+window.loadAnalytics = loadAnalytics;
+window.loadVoteDashboard = loadVoteDashboard;
+window.exportVoteSummaryToExcel = exportVoteSummaryToExcel;
+window.generateReport = generateReport;
+window.exportReportToExcel = exportReportToExcel;
+window.selectAllHospitals = selectAllHospitals;
+window.deselectAllHospitals = deselectAllHospitals;
+window.selectAllVotes = selectAllVotes;
+window.deselectAllVotes = deselectAllVotes;
+window.selectAllProgress = selectAllProgress;
+window.deselectAllProgress = deselectAllProgress;
+window.resetReportFilters = resetReportFilters;
+window.changePage = changePage;
+window.generateDetailedHospitalReport = generateDetailedHospitalReport;
+
+console.log('Hospital Project Management System loaded successfully');
+</script>
 </body>
-
 </html>
-
-
-
-
-
-
-
-
-
-

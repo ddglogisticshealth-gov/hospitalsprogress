@@ -2252,6 +2252,38 @@ const USERS = {
     'Public Health Veterinary Services': { password: 'FV19', type: 'hospital', name: 'Public Health Veterinary Services' }
 };
 
+// Utility functions for consistent progress calculations
+function calculateFinancialProgress(project) {
+    const totalBills = (project.bill1 || 0) + (project.bill2 || 0) + (project.bill3 || 0) + 
+                      (project.bill4 || 0) + (project.bill5 || 0);
+    return project.awardingAmount > 0 ? ((totalBills / project.awardingAmount) * 100) : 0;
+}
+
+function calculateAveragePhysicalProgress(projects) {
+    if (projects.length === 0) return 0;
+    return projects.reduce((sum, p) => sum + p.physicalProgress, 0) / projects.length;
+}
+
+function calculateAverageFinancialProgress(projects) {
+    if (projects.length === 0) return 0;
+    
+    let totalWeightedProgress = 0;
+    let totalWeight = 0;
+    
+    projects.forEach(project => {
+        const financialProgress = calculateFinancialProgress(project);
+        totalWeightedProgress += financialProgress * project.awardingAmount;
+        totalWeight += project.awardingAmount;
+    });
+    
+    return totalWeight > 0 ? totalWeightedProgress / totalWeight : 0;
+}
+
+function calculateTotalBills(project) {
+    return (project.bill1 || 0) + (project.bill2 || 0) + (project.bill3 || 0) + 
+           (project.bill4 || 0) + (project.bill5 || 0);
+}
+
 // Authentication Function - FIXED
 async function login() {
     const username = document.getElementById('hospitalName').value;
@@ -2570,7 +2602,7 @@ function filterProjects() {
     displayHospitalSummary();
 }
 
-// Display hospital summary
+// Display hospital summary - FIXED with proper progress calculations
 function displayHospitalSummary() {
     if (currentUser.type !== 'admin') {
         document.getElementById('hospitalSummary').innerHTML = '';
@@ -2588,17 +2620,19 @@ function displayHospitalSummary() {
     }
     
     const stats = hospitalProjects.reduce((acc, project) => {
-        const totalBills = (project.bill1 || 0) + (project.bill2 || 0) + (project.bill3 || 0) + 
-                          (project.bill4 || 0) + (project.bill5 || 0);
-        const financialProgress = project.awardingAmount > 0 ? 
-            ((totalBills / project.awardingAmount) * 100) : 0;
-            
+        const totalBills = calculateTotalBills(project);
+        
         acc.totalProjects++;
         acc.totalAllocation += project.allocationAmount;
         acc.totalAwarded += project.awardingAmount;
         acc.totalBills += totalBills;
         acc.totalPhysicalProgress += project.physicalProgress;
-        acc.totalFinancialProgress += financialProgress;
+        
+        // Calculate financial progress for this project
+        const financialProgress = calculateFinancialProgress(project);
+        acc.totalFinancialProgress += financialProgress * project.awardingAmount; // Weight by awarding amount
+        acc.totalWeight += project.awardingAmount;
+        
         if (project.physicalProgress === 100) acc.completedProjects++;
         return acc;
     }, {
@@ -2608,11 +2642,15 @@ function displayHospitalSummary() {
         totalBills: 0,
         totalPhysicalProgress: 0,
         totalFinancialProgress: 0,
+        totalWeight: 0,
         completedProjects: 0
     });
     
-    const avgPhysicalProgress = stats.totalProjects > 0 ? (stats.totalPhysicalProgress / stats.totalProjects).toFixed(1) : 0;
-    const avgFinancialProgress = stats.totalProjects > 0 ? (stats.totalFinancialProgress / stats.totalProjects).toFixed(1) : 0;
+    const avgPhysicalProgress = stats.totalProjects > 0 ? 
+        (stats.totalPhysicalProgress / stats.totalProjects).toFixed(1) : 0;
+    
+    const avgFinancialProgress = stats.totalWeight > 0 ? 
+        (stats.totalFinancialProgress / stats.totalWeight).toFixed(1) : 0;
     
     document.getElementById('hospitalSummary').innerHTML = `
         <div class="hospital-summary">
@@ -2746,7 +2784,7 @@ function getFormData() {
     };
 }
 
-// Display statistics
+// Display statistics - FIXED with proper progress calculations
 function displayStats() {
     const statsContainer = document.getElementById('dashboardStats');
     const totalProjects = projects.length;
@@ -2756,15 +2794,12 @@ function displayStats() {
     const totalBills = projects.reduce((sum, p) => {
         return sum + (p.bill1 || 0) + (p.bill2 || 0) + (p.bill3 || 0) + (p.bill4 || 0) + (p.bill5 || 0);
     }, 0);
-    const avgPhysicalProgress = totalProjects > 0 ? projects.reduce((sum, p) => sum + p.physicalProgress, 0) / totalProjects : 0;
     
-    // Calculate average financial progress
-    const totalFinancialProgress = projects.reduce((sum, p) => {
-        const totalBills = (p.bill1 || 0) + (p.bill2 || 0) + (p.bill3 || 0) + (p.bill4 || 0) + (p.bill5 || 0);
-        const financialProgress = p.awardingAmount > 0 ? ((totalBills / p.awardingAmount) * 100) : 0;
-        return sum + financialProgress;
-    }, 0);
-    const avgFinancialProgress = totalProjects > 0 ? totalFinancialProgress / totalProjects : 0;
+    // Calculate average physical progress (simple average)
+    const avgPhysicalProgress = calculateAveragePhysicalProgress(projects);
+    
+    // Calculate average financial progress (weighted by awarding amount)
+    const avgFinancialProgress = calculateAverageFinancialProgress(projects);
 
     statsContainer.innerHTML = `
         <div class="stat-card">
@@ -2823,8 +2858,8 @@ function displayProjects() {
     }
 
     projectsContainer.innerHTML = paginatedProjects.map(project => {
-        const totalBills = (project.bill1 || 0) + (project.bill2 || 0) + (project.bill3 || 0) + (project.bill4 || 0) + (project.bill5 || 0);
-        const financialProgress = project.awardingAmount > 0 ? ((totalBills / project.awardingAmount) * 100) : 0;
+        const totalBills = calculateTotalBills(project);
+        const financialProgress = calculateFinancialProgress(project);
         
         return `
             <div class="project-card">
@@ -3130,7 +3165,7 @@ function loadAnalytics() {
     
     const spendingData = hospitalsForFinance.map(hospital => 
         filtered.filter(p => p.hospitalNameForm === hospital)
-            .reduce((sum, p) => sum + (p.bill1 || 0) + (p.bill2 || 0) + (p.bill3 || 0) + (p.bill4 || 0) + (p.bill5 || 0), 0)
+            .reduce((sum, p) => sum + calculateTotalBills(p), 0)
     );
     
     const ctx3 = document.getElementById('financialChart').getContext('2d');
@@ -3298,10 +3333,8 @@ function exportToExcelLocal() {
         // Example: If you have projects data
         if (typeof projects !== 'undefined' && Array.isArray(projects)) {
             data = projects.map(project => {
-                const totalBills = (project.bill1 || 0) + (project.bill2 || 0) + (project.bill3 || 0) + 
-                                  (project.bill4 || 0) + (project.bill5 || 0);
-                const financialProgress = project.awardingAmount > 0 ? 
-                    ((totalBills / project.awardingAmount) * 100) : 0;
+                const totalBills = calculateTotalBills(project);
+                const financialProgress = calculateFinancialProgress(project);
                     
                 return {
                     'Hospital Name': project.hospitalNameForm,
@@ -3367,10 +3400,8 @@ function loadVoteDashboard() {
         // If vote filter is set and doesn't match, skip
         if (voteFilter && project.vote !== voteFilter) return;
         
-        const totalBills = (project.bill1 || 0) + (project.bill2 || 0) + (project.bill3 || 0) +
-                          (project.bill4 || 0) + (project.bill5 || 0);
-        const financialProgress = project.awardingAmount > 0 ? 
-            ((totalBills / project.awardingAmount) * 100) : 0;
+        const totalBills = calculateTotalBills(project);
+        const financialProgress = calculateFinancialProgress(project);
             
         if (!voteData[project.vote]) {
             voteData[project.vote] = {
@@ -3394,15 +3425,16 @@ function loadVoteDashboard() {
         vote.bills += totalBills;
         // For progress: we'll do a weighted average by allocation
         vote.progressTotal += project.physicalProgress * project.allocationAmount;
-        vote.financialProgressTotal += financialProgress * project.allocationAmount;
+        vote.financialProgressTotal += financialProgress * project.awardingAmount;
         vote.weight += project.allocationAmount;
+        vote.financialWeight += project.awardingAmount;
     });
     
     // Calculate weighted progress
     Object.keys(voteData).forEach(voteKey => {
         let vote = voteData[voteKey];
         vote.progress = vote.weight > 0 ? (vote.progressTotal / vote.weight) : 0;
-        vote.financialProgress = vote.weight > 0 ? (vote.financialProgressTotal / vote.weight) : 0;
+        vote.financialProgress = vote.financialWeight > 0 ? (vote.financialProgressTotal / vote.financialWeight) : 0;
     });
     
     // Convert to array for display
@@ -3434,10 +3466,15 @@ function loadVoteDashboard() {
     const totalAllocation = voteSummary.reduce((sum, v) => sum + v.allocation, 0);
     const totalAwarded = voteSummary.reduce((sum, v) => sum + v.awarded, 0);
     const totalBills = voteSummary.reduce((sum, v) => sum + v.bills, 0);
-    const avgProgress = voteSummary.length > 0 ? 
-        voteSummary.reduce((sum, v) => sum + v.progress, 0) / voteSummary.length : 0;
-    const avgFinancialProgress = voteSummary.length > 0 ? 
-        voteSummary.reduce((sum, v) => sum + v.financialProgress, 0) / voteSummary.length : 0;
+    
+    // Calculate weighted averages
+    const totalWeightedPhysicalProgress = voteSummary.reduce((sum, v) => sum + (v.progress * v.weight), 0);
+    const totalWeightedFinancialProgress = voteSummary.reduce((sum, v) => sum + (v.financialProgress * v.financialWeight), 0);
+    const totalPhysicalWeight = voteSummary.reduce((sum, v) => sum + v.weight, 0);
+    const totalFinancialWeight = voteSummary.reduce((sum, v) => sum + v.financialWeight, 0);
+    
+    const avgProgress = totalPhysicalWeight > 0 ? totalWeightedPhysicalProgress / totalPhysicalWeight : 0;
+    const avgFinancialProgress = totalFinancialWeight > 0 ? totalWeightedFinancialProgress / totalFinancialWeight : 0;
     
     voteStatsContainer.innerHTML = `
         <div class="vote-stat">
@@ -3562,10 +3599,8 @@ function exportVoteSummaryToExcel() {
         // Aggregate data by vote
         let voteData = {};
         projects.forEach(project => {
-            const totalBills = (project.bill1 || 0) + (project.bill2 || 0) + (project.bill3 || 0) +
-                              (project.bill4 || 0) + (project.bill5 || 0);
-            const financialProgress = project.awardingAmount > 0 ? 
-                ((totalBills / project.awardingAmount) * 100) : 0;
+            const totalBills = calculateTotalBills(project);
+            const financialProgress = calculateFinancialProgress(project);
                 
             if (!voteData[project.vote]) {
                 voteData[project.vote] = {
@@ -3578,7 +3613,8 @@ function exportVoteSummaryToExcel() {
                     financialProgress: 0,
                     progressTotal: 0,
                     financialProgressTotal: 0,
-                    weight: 0
+                    weight: 0,
+                    financialWeight: 0
                 };
             }
             
@@ -3588,15 +3624,16 @@ function exportVoteSummaryToExcel() {
             vote.awarded += project.awardingAmount;
             vote.bills += totalBills;
             vote.progressTotal += project.physicalProgress * project.allocationAmount;
-            vote.financialProgressTotal += financialProgress * project.allocationAmount;
+            vote.financialProgressTotal += financialProgress * project.awardingAmount;
             vote.weight += project.allocationAmount;
+            vote.financialWeight += project.awardingAmount;
         });
         
         // Calculate weighted progress
         Object.keys(voteData).forEach(voteKey => {
             let vote = voteData[voteKey];
             vote.progress = vote.weight > 0 ? (vote.progressTotal / vote.weight) : 0;
-            vote.financialProgress = vote.weight > 0 ? (vote.financialProgressTotal / vote.weight) : 0;
+            vote.financialProgress = vote.financialWeight > 0 ? (vote.financialProgressTotal / vote.financialWeight) : 0;
         });
         
         // Convert to array for export
@@ -3833,25 +3870,21 @@ function generateReportByType(type, filteredProjects) {
     }
 }
 
-// Generate report summary
+// Generate report summary - FIXED with proper progress calculations
 function generateReportSummary(filteredProjects) {
     const totalProjects = filteredProjects.length;
     const completedProjects = filteredProjects.filter(p => p.physicalProgress === 100).length;
     const totalAllocation = filteredProjects.reduce((sum, p) => sum + p.allocationAmount, 0);
     const totalAwarded = filteredProjects.reduce((sum, p) => sum + p.awardingAmount, 0);
     const totalBills = filteredProjects.reduce((sum, p) => {
-        return sum + (p.bill1 || 0) + (p.bill2 || 0) + (p.bill3 || 0) + (p.bill4 || 0) + (p.bill5 || 0);
+        return sum + calculateTotalBills(p);
     }, 0);
-    const avgPhysicalProgress = totalProjects > 0 ? 
-        filteredProjects.reduce((sum, p) => sum + p.physicalProgress, 0) / totalProjects : 0;
     
-    // Calculate average financial progress
-    const totalFinancialProgress = filteredProjects.reduce((sum, p) => {
-        const totalBills = (p.bill1 || 0) + (p.bill2 || 0) + (p.bill3 || 0) + (p.bill4 || 0) + (p.bill5 || 0);
-        const financialProgress = p.awardingAmount > 0 ? ((totalBills / p.awardingAmount) * 100) : 0;
-        return sum + financialProgress;
-    }, 0);
-    const avgFinancialProgress = totalProjects > 0 ? totalFinancialProgress / totalProjects : 0;
+    // Calculate average physical progress (simple average)
+    const avgPhysicalProgress = calculateAveragePhysicalProgress(filteredProjects);
+    
+    // Calculate average financial progress (weighted by awarding amount)
+    const avgFinancialProgress = calculateAverageFinancialProgress(filteredProjects);
 
     document.getElementById('reportSummary').innerHTML = `
         <div class="report-summary-card">
@@ -3890,10 +3923,8 @@ function generateHospitalReport(projects) {
     // Group by hospital
     const hospitalData = {};
     projects.forEach(project => {
-        const totalBills = (project.bill1 || 0) + (project.bill2 || 0) + (project.bill3 || 0) +
-                          (project.bill4 || 0) + (project.bill5 || 0);
-        const financialProgress = project.awardingAmount > 0 ? 
-            ((totalBills / project.awardingAmount) * 100) : 0;
+        const totalBills = calculateTotalBills(project);
+        const financialProgress = calculateFinancialProgress(project);
             
         if (!hospitalData[project.hospitalNameForm]) {
             hospitalData[project.hospitalNameForm] = {
@@ -3906,7 +3937,8 @@ function generateHospitalReport(projects) {
                 financialProgress: 0,
                 progressTotal: 0,
                 financialProgressTotal: 0,
-                weight: 0
+                weight: 0,
+                financialWeight: 0
             };
         }
         
@@ -3917,15 +3949,16 @@ function generateHospitalReport(projects) {
         hospital.bills += totalBills;
         // For progress: we'll do a weighted average by allocation
         hospital.progressTotal += project.physicalProgress * project.allocationAmount;
-        hospital.financialProgressTotal += financialProgress * project.allocationAmount;
+        hospital.financialProgressTotal += financialProgress * project.awardingAmount;
         hospital.weight += project.allocationAmount;
+        hospital.financialWeight += project.awardingAmount;
     });
     
     // Calculate weighted progress
     Object.keys(hospitalData).forEach(hospitalKey => {
         let hospital = hospitalData[hospitalKey];
         hospital.progress = hospital.weight > 0 ? (hospital.progressTotal / hospital.weight) : 0;
-        hospital.financialProgress = hospital.weight > 0 ? (hospital.financialProgressTotal / hospital.weight) : 0;
+        hospital.financialProgress = hospital.financialWeight > 0 ? (hospital.financialProgressTotal / hospital.financialWeight) : 0;
     });
     
     const hospitalSummary = Object.values(hospitalData);
@@ -3970,10 +4003,8 @@ function generateVoteReport(projects) {
     // Group by vote
     const voteData = {};
     projects.forEach(project => {
-        const totalBills = (project.bill1 || 0) + (project.bill2 || 0) + (project.bill3 || 0) +
-                          (project.bill4 || 0) + (project.bill5 || 0);
-        const financialProgress = project.awardingAmount > 0 ? 
-            ((totalBills / project.awardingAmount) * 100) : 0;
+        const totalBills = calculateTotalBills(project);
+        const financialProgress = calculateFinancialProgress(project);
             
         if (!voteData[project.vote]) {
             voteData[project.vote] = {
@@ -3986,7 +4017,8 @@ function generateVoteReport(projects) {
                 financialProgress: 0,
                 progressTotal: 0,
                 financialProgressTotal: 0,
-                weight: 0
+                weight: 0,
+                financialWeight: 0
             };
         }
         
@@ -3996,15 +4028,16 @@ function generateVoteReport(projects) {
         vote.awarded += project.awardingAmount;
         vote.bills += totalBills;
         vote.progressTotal += project.physicalProgress * project.allocationAmount;
-        vote.financialProgressTotal += financialProgress * project.allocationAmount;
+        vote.financialProgressTotal += financialProgress * project.awardingAmount;
         vote.weight += project.allocationAmount;
+        vote.financialWeight += project.awardingAmount;
     });
     
     // Calculate weighted progress
     Object.keys(voteData).forEach(voteKey => {
         let vote = voteData[voteKey];
         vote.progress = vote.weight > 0 ? (vote.progressTotal / vote.weight) : 0;
-        vote.financialProgress = vote.weight > 0 ? (vote.financialProgressTotal / vote.weight) : 0;
+        vote.financialProgress = vote.financialWeight > 0 ? (vote.financialProgressTotal / vote.financialWeight) : 0;
     });
     
     const voteSummary = Object.values(voteData);
@@ -4062,16 +4095,19 @@ function generateProgressReport(projects) {
         
         const allocation = rangeProjects.reduce((sum, p) => sum + p.allocationAmount, 0);
         const awarded = rangeProjects.reduce((sum, p) => sum + p.awardingAmount, 0);
-        const bills = rangeProjects.reduce((sum, p) => 
-            sum + (p.bill1 || 0) + (p.bill2 || 0) + (p.bill3 || 0) + (p.bill4 || 0) + (p.bill5 || 0), 0);
+        const bills = rangeProjects.reduce((sum, p) => sum + calculateTotalBills(p), 0);
         
-        // Calculate average financial progress for this range
-        const totalFinancialProgress = rangeProjects.reduce((sum, p) => {
-            const totalBills = (p.bill1 || 0) + (p.bill2 || 0) + (p.bill3 || 0) + (p.bill4 || 0) + (p.bill5 || 0);
-            const financialProgress = p.awardingAmount > 0 ? ((totalBills / p.awardingAmount) * 100) : 0;
-            return sum + financialProgress;
-        }, 0);
-        const avgFinancialProgress = rangeProjects.length > 0 ? totalFinancialProgress / rangeProjects.length : 0;
+        // Calculate average financial progress for this range (weighted)
+        let totalWeightedFinancialProgress = 0;
+        let totalWeight = 0;
+        
+        rangeProjects.forEach(project => {
+            const financialProgress = calculateFinancialProgress(project);
+            totalWeightedFinancialProgress += financialProgress * project.awardingAmount;
+            totalWeight += project.awardingAmount;
+        });
+        
+        const avgFinancialProgress = totalWeight > 0 ? totalWeightedFinancialProgress / totalWeight : 0;
         
         return {
             range: range.label,
@@ -4140,11 +4176,9 @@ function generateFinancialReport(projects) {
     `;
     
     projects.forEach(project => {
-        const totalBills = (project.bill1 || 0) + (project.bill2 || 0) + (project.bill3 || 0) +
-                          (project.bill4 || 0) + (project.bill5 || 0);
+        const totalBills = calculateTotalBills(project);
         const balance = project.awardingAmount - totalBills;
-        const financialProgress = project.awardingAmount > 0 ? 
-            ((totalBills / project.awardingAmount) * 100) : 0;
+        const financialProgress = calculateFinancialProgress(project);
         
         tableHTML += `
             <tr>
@@ -4258,22 +4292,15 @@ function generateDetailedHospitalSummary(projects, hospitalName) {
     
     const totalAllocation = projects.reduce((sum, p) => sum + p.allocationAmount, 0);
     const totalAwarded = projects.reduce((sum, p) => sum + p.awardingAmount, 0);
-    const totalBills = projects.reduce((sum, p) => {
-        return sum + (p.bill1 || 0) + (p.bill2 || 0) + (p.bill3 || 0) + 
-               (p.bill4 || 0) + (p.bill5 || 0);
-    }, 0);
+    const totalBills = projects.reduce((sum, p) => sum + calculateTotalBills(p), 0);
     
     const totalAdvance = projects.reduce((sum, p) => sum + (p.advanceAmount || 0), 0);
-    const avgPhysicalProgress = totalProjects > 0 ? 
-        projects.reduce((sum, p) => sum + p.physicalProgress, 0) / totalProjects : 0;
     
-    // Calculate average financial progress
-    const totalFinancialProgress = projects.reduce((sum, p) => {
-        const totalBills = (p.bill1 || 0) + (p.bill2 || 0) + (p.bill3 || 0) + (p.bill4 || 0) + (p.bill5 || 0);
-        const financialProgress = p.awardingAmount > 0 ? ((totalBills / p.awardingAmount) * 100) : 0;
-        return sum + financialProgress;
-    }, 0);
-    const avgFinancialProgress = totalProjects > 0 ? totalFinancialProgress / totalProjects : 0;
+    // Calculate average physical progress (simple average)
+    const avgPhysicalProgress = calculateAveragePhysicalProgress(projects);
+    
+    // Calculate average financial progress (weighted by awarding amount)
+    const avgFinancialProgress = calculateAverageFinancialProgress(projects);
     
     // Calculate progress distribution
     const progressRanges = [
@@ -4344,10 +4371,8 @@ function generateDetailedProjectTable(projects) {
     `;
     
     projects.forEach(project => {
-        const totalBills = (project.bill1 || 0) + (project.bill2 || 0) + (project.bill3 || 0) +
-                          (project.bill4 || 0) + (project.bill5 || 0);
-        const financialProgress = project.awardingAmount > 0 ? 
-            ((totalBills / project.awardingAmount) * 100) : 0;
+        const totalBills = calculateTotalBills(project);
+        const financialProgress = calculateFinancialProgress(project);
         
         tableHTML += `
             <tr>

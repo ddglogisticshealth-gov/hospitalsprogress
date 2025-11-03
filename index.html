@@ -1,211 +1,4643 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>System Under Maintenance</title>
-  <style>
-    :root{
-      --bg1:#0f172a;
-      --bg2:#071036;
-      --accent:#7c5cff;
-      --accent-2:#2ce8b6;
-      --glass: rgba(255,255,255,0.06);
-    }
-    /* Reset & layout */
-    *{box-sizing:border-box;margin:0;padding:0}
-    html,body{height:100%}
-    body{
-      font-family:Inter,ui-sans-serif,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;
-      background: radial-gradient(1200px 600px at 10% 20%, rgba(124,92,255,0.12), transparent),
-                  radial-gradient(900px 500px at 90% 80%, rgba(44,232,182,0.06), transparent),
-                  linear-gradient(180deg,var(--bg1),var(--bg2));
-      color:#e6eef8;
-      -webkit-font-smoothing:antialiased;
-      display:flex;align-items:center;justify-content:center;padding:32px;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Deputy Director General (Logistics) Hospital Project Management System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <style>
+       :root {
+    --primary: #2c6fbb;
+    --primary-dark: #1a4f8c;
+    --secondary: #4ca1af;
+    --accent: #36b37e;
+    --light: #f8f9fc;
+    --dark: #2d3748;
+    --gray: #718096;
+    --light-gray: #e2e8f0;
+    --danger: #e53e3e;
+    --warning: #ecc94b;
+    --success: #48bb78;
+    --card-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+    --transition: all 0.3s ease;
+}
 
-    .card{
-      width:min(920px,96%);
-      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
-      border-radius:18px;
-      box-shadow: 0 10px 30px rgba(2,6,23,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
-      padding:48px;display:grid;grid-template-columns:1fr 380px;gap:28px;align-items:center;
-      backdrop-filter: blur(6px);
-      position:relative;overflow:hidden;
-    }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
 
-    /* Animated background shapes */
-    .card::before, .card::after{
-      content:"";position:absolute;border-radius:50%;filter:blur(40px);opacity:0.8;
-      transform: translateZ(0);
-    }
-    .card::before{width:420px;height:420px;right:-120px;top:-120px;background:linear-gradient(45deg,var(--accent),transparent);animation:float1 8s ease-in-out infinite}
-    .card::after{width:320px;height:320px;left:-90px;bottom:-130px;background:linear-gradient(135deg,var(--accent-2),transparent);animation:float2 10s ease-in-out infinite}
+body {
+    background: linear-gradient(135deg, #f0f7ff 0%, #e6f0ff 100%);
+    color: #333;
+    line-height: 1.6;
+    min-height: 100vh;
+    padding: 20px;
+}
 
-    @keyframes float1{0%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-18px) rotate(8deg)}100%{transform:translateY(0) rotate(0deg)}}
-    @keyframes float2{0%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(20px) rotate(-6deg)}100%{transform:translateY(0) rotate(0deg)}}
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
 
-    /* Left column */
-    .left{
-      padding-right:6px;
-    }
-    h1{
-      font-size:clamp(22px,3.3vw,34px);letter-spacing:-0.02em;margin-bottom:12px;
-      display:flex;gap:12px;align-items:center;
-    }
-    .emoji{
-      font-size:1.25em;display:inline-grid;place-items:center;width:46px;height:46px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.01));box-shadow:0 4px 14px rgba(0,0,0,0.4);
-      transform-origin:center;animation:pop 3s ease-in-out infinite;
-    }
-    @keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.06)}60%{transform:scale(1.03)}100%{transform:scale(1)}}
+/* Login Screen */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    padding: 20px;
+}
 
-    p.lead{color:rgba(230,238,248,0.9);margin-bottom:18px;font-size:1.02rem}
-    p.sub{color:rgba(230,238,248,0.65);margin-bottom:20px}
+.login-form {
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    width: 100%;
+    max-width: 450px;
+    box-shadow: var(--card-shadow);
+    text-align: center;
+    animation: fadeIn 0.8s ease;
+}
 
-    /* Progress + gears */
-    .progress-wrap{display:flex;gap:16px;align-items:center}
-    .progress{
-      --p:46%;
-      width:100%;height:14px;background:rgba(255,255,255,0.04);border-radius:999px;position:relative;overflow:hidden;
-      box-shadow:inset 0 1px 0 rgba(255,255,255,0.02);
+.login-header {
+    margin-bottom: 30px;
+}
+
+.login-header h1 {
+    color: var(--primary);
+    font-size: 2.2rem;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+.login-header p {
+    color: var(--gray);
+    font-size: 1.1rem;
+}
+
+/* Enhanced Form Styling */
+.form-group {
+    margin-bottom: 25px;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--dark);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95rem;
+}
+
+.form-control {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid var(--light-gray);
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: var(--transition);
+    background-color: #fff;
+    color: var(--dark);
+}
+
+.form-control:focus {
+    border-color: var(--primary);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(44, 111, 187, 0.15);
+    transform: translateY(-2px);
+}
+
+.form-control::placeholder {
+    color: #a0aec0;
+    opacity: 1;
+}
+
+/* Vote Number field styling */
+.form-group input[list] {
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 16px;
+    padding-right: 45px;
+    cursor: pointer;
+}
+
+.form-group input[type="text"][list]:hover {
+    border-color: var(--secondary);
+}
+
+/* Enhanced dropdown arrow for select elements */
+select.form-control {
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23718096' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 16px;
+    padding-right: 45px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+}
+
+select.form-control:focus {
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232c6fbb' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+}
+
+/* Enhanced number input styling */
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Enhanced textarea styling */
+textarea.form-control {
+    resize: vertical;
+    min-height: 100px;
+    max-height: 200px;
+    font-family: inherit;
+}
+
+.btn {
+    background: linear-gradient(to right, var(--primary), var(--primary-dark));
+    color: white;
+    border: none;
+    padding: 15px 25px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    text-decoration: none;
+}
+
+.btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 7px 15px rgba(44, 111, 187, 0.3);
+}
+
+.btn-outline {
+    background: transparent;
+    border: 2px solid var(--primary);
+    color: var(--primary);
+}
+
+.btn-outline:hover {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-secondary {
+    background: linear-gradient(to right, #e53e3e, #c53030);
+}
+
+.btn-success {
+    background: linear-gradient(to right, var(--success), #2f9e5a);
+}
+
+/* Main App */
+header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: white;
+    padding: 20px 40px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logo-icon {
+    font-size: 32px;
+    background: rgba(255, 255, 255, 0.15);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.user-avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    font-weight: bold;
+    font-size: 18px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.nav-tabs {
+    display: flex;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 15px;
+    padding: 5px;
+    margin-top: 20px;
+    backdrop-filter: blur(5px);
+}
+
+.nav-tab {
+    padding: 12px 25px;
+    cursor: pointer;
+    border-radius: 12px;
+    transition: var(--transition);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav-tab:hover, .nav-tab.active {
+    background: white;
+    color: var(--primary);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Content Sections */
+.section {
+    padding: 30px;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Dashboard */
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.dashboard-header h2 {
+    font-size: 1.8rem;
+    color: var(--dark);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.filters-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    background: var(--light);
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-group label {
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+    color: var(--gray);
+    font-weight: 600;
+}
+
+.search-box {
+    display: flex;
+    gap: 12px;
+    grid-column: 1 / -1;
+}
+
+.search-box input {
+    flex: 1;
+}
+
+/* Stats */
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    text-align: center;
+    box-shadow: var(--card-shadow);
+    transition: var(--transition);
+    border-left: 5px solid var(--primary);
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+}
+
+.stat-icon {
+    width: 60px;
+    height: 60px;
+    background: rgba(44, 111, 187, 0.1);
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 15px;
+    font-size: 24px;
+    color: var(--primary);
+}
+
+.stat-number {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 5px;
+}
+
+.stat-card p {
+    color: var(--gray);
+    font-size: 1rem;
+}
+
+/* Projects Grid */
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 25px;
+}
+
+.project-card {
+    background: white;
+    border-radius: 18px;
+    padding: 25px;
+    box-shadow: var(--card-shadow);
+    transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+.project-card:hover {
+    transform: translateY(-7px);
+    box-shadow: 0 20px 30px rgba(0, 0, 0, 0.12);
+}
+
+.project-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+}
+
+.project-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.project-header h3 {
+    color: var(--primary);
+    font-size: 1.3rem;
+    margin-bottom: 5px;
+}
+
+.project-header span {
+    color: var(--gray);
+    font-size: 0.95rem;
+}
+
+.project-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.project-description {
+    margin-bottom: 20px;
+    color: var(--dark);
+    line-height: 1.7;
+}
+
+.financial-summary {
+    background: var(--light);
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+.financial-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--light-gray);
+}
+
+.financial-item:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border: none;
+}
+
+.progress-container {
+    margin: 20px 0;
+}
+
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.progress-bar {
+    height: 12px;
+    background: var(--light-gray);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    border-radius: 10px;
+}
+
+.financial-progress .progress-fill {
+    background: linear-gradient(90deg, var(--accent), #2f9e5a);
+}
+
+.project-remark {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--light-gray);
+    font-style: italic;
+    color: var(--gray);
+}
+
+.project-remark strong {
+    color: var(--dark);
+}
+
+/* Pagination */
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 40px;
+    flex-wrap: wrap;
+}
+
+/* Hospital Summary */
+.hospital-summary {
+    background: linear-gradient(135deg, #f0f7ff 0%, #e6f0ff 100%);
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 30px;
+    border-left: 5px solid var(--primary);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.hospital-summary h3 {
+    margin-bottom: 20px;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.summary-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.summary-stats div {
+    background: white;
+    padding: 15px;
+    border-radius: 12px;
+    font-weight: 500;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+}
+
+.summary-stats span {
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin-top: 5px;
+}
+
+/* Analytics */
+.analytics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+    gap: 25px;
+    margin-top: 20px;
+}
+
+.chart-container {
+    background: white;
+    border-radius: 18px;
+    padding: 25px;
+    box-shadow: var(--card-shadow);
+    transition: var(--transition);
+}
+
+.chart-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+}
+
+.chart-title {
+    margin-bottom: 20px;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.chart {
+    height: 300px;
+    position: relative;
+}
+
+/* Enhanced Modal Styling */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(5px);
+    animation: fadeIn 0.4s ease;
+    padding: 20px;
+}
+
+.modal-content {
+    background: white;
+    width: 95%;
+    max-width: 900px;
+    border-radius: 20px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: slideUp 0.5s ease;
+}
+
+.modal-header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: white;
+    padding: 25px 30px;
+    border-radius: 20px 20px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.modal-header h2 {
+    font-size: 1.6rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.close-modal {
+    font-size: 28px;
+    cursor: pointer;
+    transition: var(--transition);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.close-modal:hover {
+    transform: rotate(90deg);
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.modal-body {
+    padding: 30px;
+}
+
+/* Vote Section Styles */
+.votes-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    gap: 25px;
+    margin-top: 20px;
+}
+
+.vote-table-container {
+    background: white;
+    border-radius: 18px;
+    padding: 25px;
+    box-shadow: var(--card-shadow);
+    transition: var(--transition);
+    overflow: hidden;
+}
+
+.vote-table-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+}
+
+.table-container {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-top: 15px;
+    border: 1px solid var(--light-gray);
+    border-radius: 12px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+}
+
+th {
+    background-color: var(--primary);
+    color: white;
+    position: sticky;
+    top: 0;
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid var(--light-gray);
+}
+
+tr:nth-child(even) {
+    background-color: rgba(44, 111, 187, 0.05);
+}
+
+tr:hover {
+    background-color: rgba(44, 111, 187, 0.1);
+}
+
+.vote-summary-card {
+    background: white;
+    border-radius: 18px;
+    padding: 25px;
+    box-shadow: var(--card-shadow);
+    transition: var(--transition);
+}
+
+.vote-summary-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+}
+
+.vote-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.vote-stat {
+    background: var(--light);
+    padding: 15px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+}
+
+.vote-stat h4 {
+    color: var(--primary);
+    margin-bottom: 8px;
+    font-size: 1rem;
+}
+
+.vote-stat .value {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+}
+
+.progress-indicator {
+    height: 8px;
+    background: var(--light-gray);
+    border-radius: 10px;
+    margin-top: 8px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    border-radius: 10px;
+}
+
+.vote-chart {
+    height: 300px;
+    position: relative;
+    margin-top: 20px;
+}
+
+/* Reports Section */
+.reports-container {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 25px;
+    margin-top: 20px;
+}
+
+.reports-filters {
+    background: white;
+    border-radius: 18px;
+    padding: 25px;
+    box-shadow: var(--card-shadow);
+    transition: var(--transition);
+}
+
+.reports-filters:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+}
+
+.reports-results {
+    background: white;
+    border-radius: 18px;
+    padding: 25px;
+    box-shadow: var(--card-shadow);
+    transition: var(--transition);
+}
+
+.reports-results:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+}
+
+.report-type-selector {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.report-type-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px;
+    border: 2px solid var(--light-gray);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.report-type-option:hover {
+    border-color: var(--primary);
+    background: rgba(44, 111, 187, 0.05);
+}
+
+.report-type-option.active {
+    border-color: var(--primary);
+    background: rgba(44, 111, 187, 0.1);
+}
+
+.report-type-option i {
+    font-size: 1.5rem;
+    color: var(--primary);
+}
+
+.report-type-option .option-content h4 {
+    color: var(--dark);
+    margin-bottom: 5px;
+}
+
+.report-type-option .option-content p {
+    color: var(--gray);
+    font-size: 0.9rem;
+}
+
+.report-filters {
+    margin-top: 20px;
+}
+
+.filter-section {
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--light-gray);
+}
+
+.filter-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.filter-section h4 {
+    color: var(--primary);
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.date-range-inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.report-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.report-actions .btn {
+    flex: 1;
+    justify-content: center;
+}
+
+/* Report Results */
+.report-results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--light-gray);
+}
+
+.report-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.report-summary-card {
+    background: var(--light);
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+}
+
+.report-summary-card h4 {
+    color: var(--primary);
+    margin-bottom: 8px;
+    font-size: 1rem;
+}
+
+.report-summary-card .value {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { 
+        opacity: 0; 
+        transform: translateY(50px);
     }
-    .progress > span{position:absolute;left:0;top:0;bottom:0;width:var(--p);background:linear-gradient(90deg,var(--accent),var(--accent-2));border-radius:inherit;transform-origin:left;animation:load 6s linear infinite}
-    @keyframes load{0%{width:0%}50%{width:72%}100%{width:6%}}
-    .steps{font-size:0.92rem;color:rgba(230,238,248,0.72);min-width:120px;text-align:right}
-
-    /* Right column - illustration */
-    .right{display:flex;flex-direction:column;gap:18px;align-items:center}
-    .illustration{
-      width:320px;height:220px;border-radius:14px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));display:grid;place-items:center;border:1px solid rgba(255,255,255,0.03);
-      box-shadow: 0 12px 30px rgba(2,6,23,0.6);
-      position:relative;overflow:hidden;
+    to { 
+        opacity: 1; 
+        transform: translateY(0);
     }
+}
 
-    /* Animated gear */
-    .gear{
-      width:110px;height:110px;display:inline-block;
-      animation:spin 7s linear infinite;opacity:0.95;filter:drop-shadow(0 8px 18px rgba(2,6,23,0.6));
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Enhanced Form Row Layout */
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+    margin-bottom: 25px;
+}
+
+.form-row .form-group {
+    margin-bottom: 0;
+}
+
+/* Full Width Form Groups */
+.form-group-full {
+    grid-column: 1 / -1;
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-group:last-child {
+    margin-bottom: 0;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 30px;
+    padding-top: 25px;
+    border-top: 1px solid var(--light-gray);
+}
+
+/* Enhanced styling for required fields */
+.form-group label[for]::after {
+    content: "*";
+    color: var(--danger);
+    margin-left: 5px;
+    font-weight: bold;
+}
+
+/* Remove asterisk from optional fields */
+.form-group:has(input:not([required])) label:after,
+.form-group:has(textarea:not([required])) label:after {
+    display: none;
+}
+
+/* Better visual feedback for form validation */
+.form-control:invalid {
+    border-color: var(--danger);
+}
+
+.form-control:valid {
+    border-color: var(--success);
+}
+
+/* Enhanced error and success states */
+.form-group.error .form-control {
+    border-color: var(--danger);
+    box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.1);
+}
+
+.form-group.success .form-control {
+    border-color: var(--success);
+    box-shadow: 0 0 0 3px rgba(72, 187, 120, 0.1);
+}
+
+/* Error message styling */
+.error-message {
+    color: var(--danger);
+    font-size: 0.875rem;
+    margin-top: 5px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.error-message::before {
+    content: "⚠";
+    font-size: 0.8rem;
+}
+
+/* Loading state for form submission */
+.form-submitting {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.form-submitting .btn {
+    position: relative;
+    color: transparent;
+}
+
+.form-submitting .btn:after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 50%;
+    left: 50%;
+    margin-left: -8px;
+    margin-top: -8px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    border-top: 2px solid #ffffff;
+    animation: spin 1s linear infinite;
+}
+
+/* Form Section Styling */
+.form-section {
+    margin-bottom: 30px;
+    padding: 25px;
+    background: rgba(44, 111, 187, 0.02);
+    border-radius: 12px;
+    border-left: 4px solid var(--primary);
+}
+
+.form-section-title {
+    color: var(--primary);
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Custom styling for different input types */
+input[type="number"].form-control {
+    text-align: right;
+}
+
+textarea.form-control {
+    font-family: inherit;
+    line-height: 1.5;
+}
+
+select.form-control option {
+    padding: 8px;
+    background: white;
+    color: var(--dark);
+}
+
+/* Enhanced datalist styling */
+input[list]::-webkit-calendar-picker-indicator {
+    display: none !important;
+}
+
+/* Loading Indicator */
+.loading-indicator {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    backdrop-filter: blur(5px);
+}
+
+.spinner {
+    width: 60px;
+    height: 60px;
+    border: 5px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top: 5px solid var(--primary);
+    animation: spin 1s linear infinite;
+}
+
+/* Improved accessibility */
+.form-control:focus {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+}
+
+/* Physical Progress field specific styling */
+.form-group select#physicalProgress {
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23718096' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 16px;
+    padding-right: 45px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.form-group select#physicalProgress:hover {
+    border-color: var(--secondary);
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234ca1af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+}
+
+.form-group select#physicalProgress:focus {
+    border-color: var(--primary);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(44, 111, 187, 0.15);
+    transform: translateY(-2px);
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232c6fbb' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+}
+
+/* Special styling for progress values */
+.form-group select#physicalProgress option[value*="Not Started"] {
+    color: var(--danger);
+}
+
+.form-group select#physicalProgress option[value*="Procurement"] {
+    color: var(--warning);
+}
+
+.form-group select#physicalProgress option[value*="Work Done"] {
+    color: var(--secondary);
+}
+
+.form-group select#physicalProgress option[value*="100"] {
+    color: var(--success);
+    font-weight: 600;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .votes-container {
+        grid-template-columns: 1fr;
     }
-    .mini-gears{position:absolute;right:18px;bottom:10px;display:flex;gap:10px;opacity:0.85}
-    .mini-gears svg{width:46px;height:46px;animation:spin-rev 6s linear infinite}
-    @keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
-    @keyframes spin-rev{0%{transform:rotate(0)}100%{transform:rotate(-360deg)}}
-
-    /* CTA and footer */
-    .cta{display:flex;gap:12px;margin-top:6px}
-    .btn{
-      padding:10px 14px;border-radius:10px;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#05102a;font-weight:600;border:none;cursor:pointer;box-shadow:0 8px 20px rgba(124,92,255,0.12);
+    
+    .reports-container {
+        grid-template-columns: 1fr;
     }
-    .muted{background:transparent;border:1px solid rgba(255,255,255,0.04);color:rgba(230,238,248,0.85)}
-
-    footer.note{grid-column:1/-1;margin-top:18px;color:rgba(230,238,248,0.5);font-size:0.9rem}
-
-    /* Responsive */
-    @media (max-width:880px){
-      .card{grid-template-columns:1fr;}
-      .right{order:-1}
-      .illustration{width:100%;height:200px}
+    
+    .modal-content {
+        width: 98%;
+        max-width: none;
     }
-  </style>
+    
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .modal-body {
+        padding: 25px;
+    }
+}
+
+@media (max-width: 768px) {
+    .vote-table-container, .vote-summary-card {
+        padding: 15px;
+    }
+    
+    table {
+        font-size: 0.85rem;
+    }
+    
+    th, td {
+        padding: 8px 10px;
+    }
+    
+    .modal {
+        padding: 10px;
+    }
+    
+    .modal-content {
+        width: 100%;
+        max-height: 95vh;
+    }
+    
+    .modal-header {
+        padding: 20px;
+    }
+    
+    .modal-body {
+        padding: 20px;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .form-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .stats-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .projects-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .analytics-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .header-content {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .nav-tabs {
+        width: 100%;
+        overflow-x: auto;
+    }
+    
+    .section {
+        padding: 20px;
+    }
+    
+    .date-range-inputs {
+        grid-template-columns: 1fr;
+    }
+    
+    .report-actions {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 480px) {
+    .modal-header h2 {
+        font-size: 1.3rem;
+    }
+    
+    .form-group label {
+        font-size: 0.9rem;
+    }
+    
+    .form-control {
+        padding: 12px;
+        font-size: 0.95rem;
+    }
+    
+    .btn {
+        padding: 12px 20px;
+        font-size: 0.95rem;
+    }
+}
+    </style>
 </head>
 <body>
-  <main class="card" role="main" aria-labelledby="maintitle">
-    <section class="left">
-      <h1 id="maintitle">
-        <span class="emoji" aria-hidden="true">🛠️</span>
-        System Under Maintenance
-      </h1>
-      <p class="lead">We're performing scheduled maintenance to improve the service. We'll be back shortly with a better, faster experience.</p>
-      <p class="sub">Thank you for your patience. If you need urgent support, contact <a href="mailto:support@example.com" style="color:inherit;text-decoration:underline;"0717888874"</a>.</p>
+    <!-- Loading Indicator -->
+    <div class="loading-indicator" id="loadingIndicator">
+        <div class="spinner"></div>
+    </div>
 
-      <div class="progress-wrap" aria-hidden="false">
-        <div class="progress" id="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-          <span></span>
+    <!-- Login Form -->
+    <div class="login-container" id="loginForm">
+        <div class="login-form">
+            <div class="login-header">
+                <h1><i class="fas fa-hospital"></i> Hospital Project Management </h1>
+                <p>Deputy Director General (Logistics-Ministry of Health)</p>
+            </div>
+            <div class="form-group">
+                <label for="hospitalName"><i class="fas fa-hospital-user"></i> Select Hospital/User</label>
+                <select id="hospitalName" class="form-control" required>
+                    <option value="">Select Hospital/User</option>
+                    <option value="admin">Administrator</option>
+
+		    
+                    <option value="Ministry of Health">Ministry of Health</option>
+                    <option value="National Hospital Sri Lanka">National Hospital Sri Lanka</option>
+                    <option value="Colombo South Teaching Hospital">Colombo South Teaching Hospital</option>
+                    <option value="Lady Ridgeway Hospital">Lady Ridgeway Hospital</option>
+                    <option value="Apeksha Hospital Maharagama">Apeksha Hospital Maharagama</option>
+                    <option value="Colombo East Base Hospital Mulleriyawa">Colombo East Base Hospital Mulleriyawa</option>
+                    <option value="Infections Diseases Hospital">Infections Diseases Hospital</option>
+                    <option value="NIMH">NIMH</option>
+                    <option value="De Soysa Hospital">De Soysa Hospital</option>
+                    <option value="Castle Street Hospital for Women">Castle Street Hospital for Women</option>
+                    <option value="National Eye Hospital">National Eye Hospital</option>
+                    <option value="Institute of Oral Health-Maharagama">Institute of Oral Health-Maharagama</option>
+                    <option value="National Blood Transfusion Service">National Blood Transfusion Service</option>
+                    <option value="National Institute for Nephrology Dialysis and Transplantation - Maligawatta">National Institute for Nephrology Dialysis and Transplantation - Maligawatta</option>
+                    <option value="Medical Research Institute">Medical Research Institute</option>
+                    <option value="National Dental Hospital">National Dental Hospital</option>
+                    <option value="Colombo North Teaching Hospital - Ragama">Colombo North Teaching Hospital - Ragama</option>
+                    <option value="Rheumatology & Rehabilitation Hospital, Ragama">Rheumatology & Rehabilitation Hospital, Ragama</option>
+                    <option value="District Hospital Kandana">District Hospital Kandana</option>
+                    <option value="National Hospital for Respiratory Diseases, Welisara">National Hospital for Respiratory Diseases, Welisara</option>
+                    <option value="Leprosy Hospital - Handala">Leprosy Hospital - Handala</option>
+                    <option value="DGH Negombo (District General Hospital)">DGH Negombo (District General Hospital)</option>
+                    <option value="Teaching Hospital Kalutara">Teaching Hospital Kalutara</option>
+                    <option value="National Institute of Health Sciences Kalutara">National Institute of Health Sciences Kalutara</option>
+                    <option value="National Hospital - Kandy">National Hospital - Kandy</option>
+                    <option value="Base Hospital Gampola">Base Hospital Gampola </option>
+                    <option value="Teaching Hospital Peradeniya">Teaching Hospital Peradeniya</option>
+                    <option value="Sirimavo Bandaranayake Hospital - Peradeniya">Sirimavo Bandaranayake Hospital - Peradeniya</option>
+                    <option value="District General Hospital Nawalapitiya">District General Hospital Nawalapitiya</option>
+                    <option value="District General Hospital NuwaraEliya">District General Hospital NuwaraEliya</option>
+                    <option value="District General Hospital Matale">District General Hospital Matale</option>
+                    <option value="National Hospital - Galle (Karapitiya)">National Hospital - Galle (Karapitiya)</option>
+                    <option value="German Sri Lanka Friendship Hospital for Women - Galle (Mahamodara)">German Sri Lanka Friendship Hospital for Women - Galle (Mahamodara)</option>
+                    <option value="District General Hospital Matara">District General Hospital Matara</option>
+                    <option value="District General Hospital Hambantota">District General Hospital Hambantota</option>
+                    <option value="TH Jaffna">TH Jaffna</option>
+                    <option value="Base Hospital Akkaraipattu">Base Hospital Akkaraipattu</option>
+                    <option value="Ashroff Hospital - Kalmunai">Ashroff Hospital - Kalmunai</option>
+                    <option value="Base Hospital Kalmunai North">Base Hospital Kalmunai North</option>
+                    <option value="District General Hospital Ampara">District General Hospital Ampara</option>
+                    <option value="Base Hospital Pottuvil">Base Hospital Pottuvil</option>
+                    <option value="District General Hospital Trincomalee">District General Hospital Trincomalee</option>
+                    <option value="District General Hospital Kantale">District General Hospital Kantale</option>
+                    <option value="Teaching Hospital Batticaloa">Teaching Hospital Batticaloa</option>
+                    <option value="District General Hospital Chilaw">District General Hospital Chilaw</option>
+                    <option value="Teaching Hospital Kurunegala">Teaching Hospital Kurunegala</option>
+                    <option value="Teaching Hospital Kuliyapitiya">Teaching Hospital Kuliyapitiya</option>
+                    <option value="District General Hospital Polonnaruwa">District General Hospital Polonnaruwa</option>
+                    <option value="China Sri Lanka Friendship National Nephrology Specialized Hospital, Polonnaruwa (CKD Hospital)">China Sri Lanka Friendship National Nephrology Specialized Hospital, Polonnaruwa (CKD Hospital)</option>
+                    <option value="TH Anuradhapura">TH Anuradhapura</option>
+                   <option value="TH Badulla">TH Badulla</option>
+                    <option value="District General Hospital Monaragala">District General Hospital Monaragala </option>
+                    <option value="District General Hospital Kegalle">District General Hospital Kegalle</option>
+                    <option value="Teaching Hospital Ratnapura">Teaching Hospital Ratnapura</option>
+                    <option value="District General Hospital Embilipitiya">District General Hospital Embilipitiya</option>
+                    <option value="National STD/AIDS Control Programme">National STD/AIDS Control Programme</option>
+                    <option value="Biomedical Engineering Services">Biomedical Engineering Services</option>
+                    <option value="Epidemiology Unit">Epidemiology Unit</option>
+                    <option value="National Cancer Control Programme">National Cancer Control Programme</option>
+                    <option value="National Programme for Tuberculosis Control & Chest Diseases">National Programme for Tuberculosis Control & Chest Diseases</option>
+                    <option value="Institute for Forensic Medicine & Toxicology">Institute for Forensic Medicine & Toxicology</option>
+                    <option value="Health Promotion Bureau">Health Promotion Bureau</option>
+                    <option value="Dengue Control Programme">Dengue Control Programme</option>
+                    <option value="Anti Malaria Campaign">Anti Malaria Campaign</option>
+                    <option value="Family Health Bureau">Family Health Bureau</option>
+                    <option value="Anti Filariasis Campaign">Anti Filariasis Campaign</option>
+                    <option value="Medical Supplies Division">Medical Supplies Division</option>
+                    <option value="Public Health Veterinary Services">Public Health Veterinary Services</option>
+		    
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="password"><i class="fas fa-lock"></i> Password</label>
+                <input type="password" id="password" class="form-control" placeholder="Enter password" required>
+            </div>
+            <button class="btn" onclick="login()">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </button>
+            <div class="login-footer">
+                <p>Ministry of Health - Project Monitoring System</p>
+            </div>
         </div>
-        <div class="steps" id="percent">Initializing...</div>
-      </div>
+    </div>
 
-      <div class="cta" style="margin-top:22px">
-        <button class="btn" id="refresh">Check Status</button>
-        <button class="btn muted" id="updates">Status Page</button>
-      </div>
+   <!-- Main Application -->
+    <div class="container hidden" id="mainApp">
+        <header>
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-hospital"></i>
+                    </div>
+                    <h1>Hospital Project Management System </h1>
+                </div>
+                <div class="user-info">
+                    <span id="userInfo">Logged in as: Admin</span>
+                    <div class="user-avatar" id="userAvatar">A</div>
+                    <!-- New buttons added here -->
+                    <button class="btn btn-outline" onclick="window.open('https://script.google.com/macros/s/AKfycbyq12-8bmBgOgixpinM9ENC2-WPW8UBD2-8I7DibGn-eyEVS2na0Wyas6kEkzEmDG4lFQ/exec', '_blank')">
+                        <i class="fas fa-envelope"></i> Messaging
+                    </button>
+                    <button class="btn btn-outline" onclick="window.location.href='https://script.google.com/macros/s/AKfycbx7LNdHfTp-GRuEqBhK_F_waCDoF-kODnWvwI3TPYMBUkGo9ohqkK9D9N4AJ0Tap1i6Ag/exec'">
+                        <i class="fas fa-file-invoice"></i> Bills In Hand
+                    </button>
+                    <button class="btn btn-secondary" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>           
+            <div class="nav-tabs">
+                <div class="nav-tab active" onclick="showSection('dashboard')">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </div>
+                <div class="nav-tab" onclick="showSection('forms')">
+                    <i class="fas fa-file-alt"></i> Project Forms
+                </div>
+                <div class="nav-tab hidden" id="analyticsTab" onclick="showSection('analytics')">
+                    <i class="fas fa-chart-bar"></i> Analytics
+                </div>
+                <div class="nav-tab hidden" id="votesTab" onclick="showSection('votes')">
+                    <i class="fas fa-file-invoice-dollar"></i> Vote Summary
+                </div>
+                <div class="nav-tab hidden" id="reportsTab" onclick="showSection('reports')">
+                    <i class="fas fa-file-alt"></i> Reports
+                </div>
+            </div>
+        </header>
 
-    </section>
-
-    <aside class="right" aria-hidden="true">
-      <div class="illustration" aria-hidden="true">
-        <!-- Large gear (SVG) -->
-        <svg class="gear" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <defs>
-            <linearGradient id="g1" x1="0" x2="1">
-              <stop offset="0" stop-color="#7c5cff"/>
-              <stop offset="1" stop-color="#2ce8b6"/>
-            </linearGradient>
-          </defs>
-          <g transform="translate(50 50)">
-            <path d="M-9-40 L9-40 L14-26 L30-24 L32-6 L46 0 L32 6 L30 24 L14 26 L9 40 L-9 40 L-14 26 L-30 24 L-32 6 L-46 0 L-32 -6 L-30 -24 L-14 -26 Z" fill="url(#g1)" opacity="0.95"/>
-            <circle r="18" fill="#06102a" stroke="rgba(255,255,255,0.06)" stroke-width="2"/>
-          </g>
-        </svg>
-
-        <div class="mini-gears">
-          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="22" fill="#09142a" stroke="url(#g1)" stroke-width="6"/></svg>
-          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="18" fill="#0b2036" stroke="url(#g1)" stroke-width="5"/></svg>
+        <!-- Dashboard Section -->
+        <div class="section" id="dashboardSection">
+            <div class="dashboard-header">
+                <h2><i class="fas fa-tachometer-alt"></i> Project Dashboard</h2>
+                <div style="display: flex; gap: 15px;">
+                    <button class="btn" onclick="openModal()">
+                        <i class="fas fa-plus"></i> New Project
+                    </button>
+                    <button class="btn btn-outline" onclick="exportToExcel()">
+                        <i class="fas fa-file-export"></i> Export to Excel
+                    </button>
+                </div>
+            </div>
+            
+            <div class="filters-container">
+                <div class="search-box">
+                    <input type="text" id="searchInput" class="form-control" placeholder="Search projects..." oninput="filterProjects()">
+                    <button class="btn btn-outline" onclick="clearSearch()">
+                        <i class="fas fa-times"></i> Clear
+                    </button>
+                </div>
+                
+                <div class="filter-group hidden" id="adminFilters">
+                    <label><i class="fas fa-hospital"></i> Filter by Hospital</label>
+                    <select id="hospitalFilter" class="form-control" onchange="filterProjects()">
+                        <option value="">All Hospitals</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label><i class="fas fa-tasks"></i> Progress Status</label>
+                    <select id="progressFilter" class="form-control" onchange="filterProjects()">
+                        <option value="">All Progress</option>
+                        <option value="0-25">0-25%</option>
+                        <option value="26-50">26-50%</option>
+                        <option value="51-75">51-75%</option>
+                        <option value="76-99">76-99%</option>
+                        <option value="100">Completed (100%)</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label><i class="fas fa-sort"></i> Sort By</label>
+                    <select id="sortSelect" class="form-control" onchange="filterProjects()">
+                        <option value="date-desc">Date (Newest First)</option>
+                        <option value="date-asc">Date (Oldest First)</option>
+                        <option value="progress-asc">Progress (Low to High)</option>
+                        <option value="progress-desc">Progress (High to Low)</option>
+                        <option value="name-asc">Hospital Name (A-Z)</option>
+                        <option value="name-desc">Hospital Name (Z-A)</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div id="hospitalSummary"></div>
+            
+            <div id="dashboardStats" class="stats-container"></div>
+            
+            <div id="projectsGrid" class="projects-grid"></div>
+            
+            <div id="paginationControls" class="pagination"></div>
         </div>
-      </div>
 
-      <div style="font-size:0.95rem;color:rgba(230,238,248,0.72);text-align:center;max-width:320px">
-        <strong style="display:block;margin-bottom:8px">What's happening</strong>
-        We're applying improvements and running tests. The progress indicator below gives a non-live visual — press "Check Status" to refresh the page.
-      </div>
-    </aside>
+        <!-- Forms Section -->
+        <div class="section hidden" id="formsSection">
+            <div class="dashboard-header">
+                <h2><i class="fas fa-file-alt"></i> Project Management</h2>
+                <button class="btn" onclick="openModal()">
+                    <i class="fas fa-plus"></i> Add New Project
+                </button>
+            </div>
+            
+            <div class="hospital-summary" style="margin-top: 30px;">
+                <h3><i class="fas fa-info-circle"></i> Project Management</h3>
+                <p>Use the "Add New Project" button to create a new project record. Edit existing projects by clicking the Edit button on the project card in the Dashboard.</p>
+                <div style="display: flex; justify-content: center; margin-top: 30px;">
+                    <img src="https://cdn.pixabay.com/photo/2018/03/10/12/00/paper-3213924_960_720.jpg" alt="Project Management" style="max-width: 100%; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.1);">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Analytics Section -->
+        <div class="section hidden" id="analyticsSection">
+            <div class="dashboard-header">
+                <h2><i class="fas fa-chart-bar"></i> Project Analytics</h2>
+                <div class="filter-group" style="max-width: 300px;">
+                    <label><i class="fas fa-hospital"></i> Hospital Filter</label>
+                    <select id="analyticsHospitalFilter" class="form-control" onchange="loadAnalytics()">
+                        <option value="">All Hospitals</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="analytics-grid">
+                <div class="chart-container">
+                    <h3 class="chart-title"><i class="fas fa-building"></i> Projects by Hospital</h3>
+                    <div class="chart">
+                        <canvas id="hospitalChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <h3 class="chart-title"><i class="fas fa-tasks"></i> Projects by Progress</h3>
+                    <div class="chart">
+                        <canvas id="progressChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <h3 class="chart-title"><i class="fas fa-money-bill-wave"></i> Financial Allocation vs Spending</h3>
+                    <div class="chart">
+                        <canvas id="financialChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <h3 class="chart-title"><i class="fas fa-chart-line"></i> Progress Distribution</h3>
+                    <div class="chart">
+                        <canvas id="progressDistributionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Vote Section -->
+        <div class="section hidden" id="votesSection">
+            <div class="dashboard-header">
+                <h2><i class="fas fa-file-invoice-dollar"></i> Vote Summary Dashboard</h2>
+                <div class="filter-group" style="max-width: 300px;">
+                    <label><i class="fas fa-filter"></i> Filter Votes</label>
+                    <select id="voteFilter" class="form-control" onchange="loadVoteDashboard()">
+                        <option value="">All Votes</option>
+                    </select>
+                </div>
+                <button class="btn btn-outline" onclick="exportVoteSummaryToExcel()">
+                    <i class="fas fa-file-export"></i> Export to Excel
+                </button>
+            </div>
+            
+            <div class="votes-container">
+                <div class="vote-table-container">
+                    <h3><i class="fas fa-table"></i> Vote Financial Summary</h3>
+                    <div class="table-container">
+                        <table id="voteTable">
+                            <thead>
+                                <tr>
+                                    <th>Vote Number</th>
+                                    <th>Projects</th>
+                                    <th>Allocation (Rs.)</th>
+                                    <th>Awarded (Rs.)</th>
+                                    <th>Bills Paid (Rs.)</th>
+                                    <th>Progress</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Data will be populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="vote-summary-card">
+                    <h3><i class="fas fa-chart-pie"></i> Vote Distribution</h3>
+                    <div class="vote-stats" id="voteStats">
+                        <!-- Stats will be populated dynamically -->
+                    </div>
+                    <div class="vote-chart">
+                        <canvas id="voteChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Reports Section -->
+        <div class="section hidden" id="reportsSection">
+            <div class="dashboard-header">
+                <h2><i class="fas fa-file-alt"></i> Reports</h2>
+                <button class="btn btn-outline" onclick="exportReportToExcel()">
+                    <i class="fas fa-file-export"></i> Export Report to Excel
+                </button>
+            </div>
+            
+            <div class="reports-container">
+                <div class="reports-filters">
+                    <h3><i class="fas fa-filter"></i> Report Filters</h3>
+                    
+                    <div class="report-type-selector">
+                        <div class="report-type-option active" data-type="hospital">
+                            <i class="fas fa-hospital"></i>
+                            <div class="option-content">
+                                <h4>Hospital Report</h4>
+                                <p>Detailed projects by hospital</p>
+                            </div>
+                        </div>
+                        <div class="report-type-option" data-type="vote">
+                            <i class="fas fa-file-invoice-dollar"></i>
+                            <div class="option-content">
+                                <h4>Vote Report</h4>
+                                <p>Projects grouped by vote number</p>
+                            </div>
+                        </div>
+                        <div class="report-type-option" data-type="progress">
+                            <i class="fas fa-tasks"></i>
+                            <div class="option-content">
+                                <h4>Progress Report</h4>
+                                <p>Projects by progress status</p>
+                            </div>
+                        </div>
+                        <div class="report-type-option" data-type="financial">
+                            <i class="fas fa-money-bill-wave"></i>
+                            <div class="option-content">
+                                <h4>Financial Report</h4>
+                                <p>Financial overview and analysis</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="report-filters">
+                        <div class="filter-section">
+                            <h4><i class="fas fa-hospital"></i> Hospital</h4>
+                            <div class="form-group">
+                                <select id="reportHospitalFilter" class="form-control" multiple style="height: 120px;">
+                                    <!-- Options will be populated dynamically -->
+                                </select>
+                                <div style="margin-top: 8px;">
+                                    <button type="button" class="btn btn-outline" style="padding: 5px 10px; font-size: 0.8rem;" onclick="selectAllHospitals()">Select All</button>
+                                    <button type="button" class="btn btn-outline" style="padding: 5px 10px; font-size: 0.8rem;" onclick="deselectAllHospitals()">Deselect All</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="filter-section">
+                            <h4><i class="fas fa-file-invoice-dollar"></i> Vote Number</h4>
+                            <div class="form-group">
+                                <select id="reportVoteFilter" class="form-control" multiple style="height: 120px;">
+                                    <!-- Options will be populated dynamically -->
+                                </select>
+                                <div style="margin-top: 8px;">
+                                    <button type="button" class="btn btn-outline" style="padding: 5px 10px; font-size: 0.8rem;" onclick="selectAllVotes()">Select All</button>
+                                    <button type="button" class="btn btn-outline" style="padding: 5px 10px; font-size: 0.8rem;" onclick="deselectAllVotes()">Deselect All</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="filter-section">
+                            <h4><i class="fas fa-tasks"></i> Progress Status</h4>
+                            <div class="form-group">
+                                <select id="reportProgressFilter" class="form-control" multiple style="height: 120px;">
+                                    <option value="0-25">0-25%</option>
+                                    <option value="26-50">26-50%</option>
+                                    <option value="51-75">51-75%</option>
+                                    <option value="76-99">76-99%</option>
+                                    <option value="100">Completed (100%)</option>
+                                </select>
+                                <div style="margin-top: 8px;">
+                                    <button type="button" class="btn btn-outline" style="padding: 5px 10px; font-size: 0.8rem;" onclick="selectAllProgress()">Select All</button>
+                                    <button type="button" class="btn btn-outline" style="padding: 5px 10px; font-size: 0.8rem;" onclick="deselectAllProgress()">Deselect All</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="filter-section">
+                            <h4><i class="fas fa-calendar"></i> Date Range</h4>
+                            <div class="date-range-inputs">
+                                <div class="form-group">
+                                    <label for="reportStartDate">Start Date</label>
+                                    <input type="date" id="reportStartDate" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label for="reportEndDate">End Date</label>
+                                    <input type="date" id="reportEndDate" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-    <footer class="note">We apologize for the inconvenience — maintenance helps us keep things secure and reliable.</footer>
-  </main>
+<!-- Add this to the reports section after the existing filters -->
+<div class="filter-section">
+    <h4><i class="fas fa-filter"></i> Detailed Hospital Report</h4>
+    <div class="form-group">
+        <label for="detailedHospitalReport">Generate Detailed Report for Specific Hospital</label>
+        <select id="detailedHospitalReport" class="form-control">
+            <option value="">-- Select Hospital for Detailed Report --</option>
+            <!-- Options will be populated dynamically -->
+        </select>
+    </div>
+    <button class="btn btn-outline" onclick="generateDetailedHospitalReport()" style="width: 100%; margin-top: 10px;">
+        <i class="fas fa-file-medical"></i> Generate Detailed Hospital Report
+    </button>
+</div>
+                    
+                    <div class="report-actions">
+                        <button class="btn" onclick="generateReport()">
+                            <i class="fas fa-cogs"></i> Generate Report
+                        </button>
+                        <button class="btn btn-outline" onclick="resetReportFilters()">
+                            <i class="fas fa-redo"></i> Reset
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="reports-results">
+                    <div class="report-results-header">
+                        <h3 id="reportTitle">Hospital Report</h3>
+                        <span id="reportDateRange"></span>
+                    </div>
+                    
+                    <div id="reportSummary" class="report-summary">
+                        <!-- Summary statistics will be populated here -->
+                    </div>
+                    
+                    <div id="reportResults" class="table-container">
+                        <!-- Report results table will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-  <script>
-    // Simple simulated progress animation + accessible updates
-    (function(){
-      const progressEl = document.getElementById('progress');
-      const percentEl = document.getElementById('percent');
-      const refreshBtn = document.getElementById('refresh');
-      const updatesBtn = document.getElementById('updates');
-      const span = progressEl.querySelector('span');
+      <!-- Project Modal -->
+    <div class="modal" id="projectModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle"><i class="fas fa-file-medical"></i> Add New Project</h2>
+                <div class="close-modal" onclick="closeModal()">&times;</div>
+            </div>
+            <div class="modal-body">
+                <form id="projectForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="hospitalNameForm"><i class="fas fa-hospital"></i> Hospital Name *</label>
+                            <select id="hospitalNameForm" class="form-control" required>
+                                <option value="">Select Hospital</option>
+                                <option value="Ministry of Health">Ministry of Health</option>
+                                <option value="National Hospital Sri Lanka">National Hospital Sri Lanka</option>
+                                <option value="Colombo South Teaching Hospital">Colombo South Teaching Hospital</option>
+                                <option value="Lady Ridgeway Hospital">Lady Ridgeway Hospital</option>
+                                <option value="Apeksha Hospital Maharagama">Apeksha Hospital Maharagama</option>
+                                <option value="Colombo East Base Hospital Mulleriyawa">Colombo East Base Hospital Mulleriyawa</option>
+                                <option value="Infections Diseases Hospital">Infections Diseases Hospital</option>
+                                <option value="NIMH">NIMH</option>
+                                <option value="De Soysa Hospital">De Soysa Hospital</option>
+                                <option value="Castle Street Hospital for Women">Castle Street Hospital for Women</option>
+                                <option value="National Eye Hospital">National Eye Hospital</option>
+                                <option value="Institute of Oral Health-Maharagama">Institute of Oral Health-Maharagama</option>
+                                <option value="National Blood Transfusion Service">National Blood Transfusion Service</option>
+                                <option value="National Institute for Nephrology Dialysis and Transplantation - Maligawatta">National Institute for Nephrology Dialysis and Transplantation - Maligawatta</option>
+                                <option value="Medical Research Institute">Medical Research Institute</option>
+                                <option value="National Dental Hospital">National Dental Hospital</option>
+                                <option value="Colombo North Teaching Hospital - Ragama">Colombo North Teaching Hospital - Ragama</option>
+                                <option value="Rheumatology & Rehabilitation Hospital, Ragama">Rheumatology & Rehabilitation Hospital, Ragama</option>
+                                <option value="District Hospital Kandana">District Hospital Kandana</option>
+                                <option value="National Hospital for Respiratory Diseases, Welisara">National Hospital for Respiratory Diseases, Welisara</option>
+                                <option value="Leprosy Hospital - Handala">Leprosy Hospital - Handala</option>
+                                <option value="DGH Negombo (District General Hospital)">DGH Negombo (District General Hospital)</option>
+                                <option value="Teaching Hospital Kalutara">Teaching Hospital Kalutara</option>
+                                <option value="National Institute of Health Sciences Kalutara">National Institute of Health Sciences Kalutara</option>
+                                <option value="National Hospital - Kandy">National Hospital - Kandy</option>
+                                <option value="Base Hospital Gampola">Base Hospital Gampola </option>
+                                <option value="Teaching Hospital Peradeniya">Teaching Hospital Peradeniya</option>
+                                <option value="Sirimavo Bandaranayake Hospital - Peradeniya">Sirimavo Bandaranayake Hospital - Peradeniya</option>
+                                <option value="District General Hospital Nawalapitiya">District General Hospital Nawalapitiya</option>
+                                <option value="District General Hospital NuwaraEliya">District General Hospital NuwaraEliya</option>
+                                <option value="District General Hospital Matale">District General Hospital Matale</option>
+                                <option value="National Hospital - Galle (Karapitiya)">National Hospital - Galle (Karapitiya)</option>
+                                <option value="German Sri Lanka Friendship Hospital for Women - Galle (Mahamodara)">German Sri Lanka Friendship Hospital for Women - Galle (Mahamodara)</option>
+                                <option value="District General Hospital Matara">District General Hospital Matara</option>
+                                <option value="District General Hospital Hambantota">District General Hospital Hambantota</option>
+                                <option value="TH Jaffna">TH Jaffna</option>
+                                <option value="Base Hospital Akkaraipattu">Base Hospital Akkaraipattu</option>
+                                <option value="Ashroff Hospital - Kalmunai">Ashroff Hospital - Kalmunai</option>
+                                <option value="Base Hospital Kalmunai North">Base Hospital Kalmunai North</option>
+                                <option value="District General Hospital Ampara">District General Hospital Ampara</option>
+                                <option value="Base Hospital Pottuvil">Base Hospital Pottuvil</option>
+                                <option value="District General Hospital Trincomalee">District General Hospital Trincomalee</option>
+                                <option value="District General Hospital Kantale">District General Hospital Kantale</option>
+                                <option value="Teaching Hospital Batticaloa">Teaching Hospital Batticaloa</option>
+                                <option value="District General Hospital Chilaw">District General Hospital Chilaw</option>
+                                <option value="Teaching Hospital Kurunegala">Teaching Hospital Kurunegala</option>
+                                <option value="Teaching Hospital Kuliyapitiya">Teaching Hospital Kuliyapitiya</option>
+                                <option value="District General Hospital Polonnaruwa">District General Hospital Polonnaruwa</option>
+                                <option value="China Sri Lanka Friendship National Nephrology Specialized Hospital, Polonnaruwa (CKD Hospital)">China Sri Lanka Friendship National Nephrology Specialized Hospital, Polonnaruwa (CKD Hospital)</option>
+                                <option value="TH Anuradhapura">TH Anuradhapura</option>
+                               <option value="TH Badulla">TH Badulla</option>
+                                <option value="District General Hospital Monaragala">District General Hospital Monaragala </option>
+                                <option value="District General Hospital Kegalle">District General Hospital Kegalle</option>
+                                <option value="Teaching Hospital Ratnapura">Teaching Hospital Ratnapura</option>
+                                <option value="District General Hospital Embilipitiya">District General Hospital Embilipitiya</option>
+                                <option value="National STD/AIDS Control Programme">National STD/AIDS Control Programme</option>
+                                <option value="Biomedical Engineering Services">Biomedical Engineering Services</option>
+                                <option value="Epidemiology Unit">Epidemiology Unit</option>
+                                <option value="National Cancer Control Programme">National Cancer Control Programme</option>
+                                <option value="National Programme for Tuberculosis Control & Chest Diseases">National Programme for Tuberculosis Control & Chest Diseases</option>
+                                <option value="Institute for Forensic Medicine & Toxicology">Institute for Forensic Medicine & Toxicology</option>
+                                <option value="Health Promotion Bureau">Health Promotion Bureau</option>
+                                <option value="Dengue Control Programme">Dengue Control Programme</option>
+                                <option value="Anti Malaria Campaign">Anti Malaria Campaign</option>
+                                <option value="Family Health Bureau">Family Health Bureau</option>
+                                <option value="Anti Filariasis Campaign">Anti Filariasis Campaign</option>
+                                <option value="Medical Supplies Division">Medical Supplies Division</option>
+                                <option value="Public Health Veterinary Services">Public Health Veterinary Services</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+  <label for="vote"><i class="fas fa-file-invoice"></i> Vote Number *</label>
+  <select id="vote" class="form-control" required>
+    <option value="">-- Select Vote Number --</option>
+    <option value="111-1-5-2001(11) Building Rehabilitation-Hospital">
+      111-1-5-2001(11) Building Rehabilitation-Hospital
+    </option>
+    <option value="111-1-5-2002(11) Service and Maintenance-Hospital">
+      111-1-5-2002(11) Service and Maintenance-Hospital
+    </option>
+    <option value="111-1-5-2103(11) Machinery Purchasing-Hospitals">
+      111-1-5-2103(11) Machinery Purchasing-Hospitals
+    </option>
+    <option value="111-1-5-0-1409-138(11) Service and Maintenance Agreements-Hospital & Other Institutions">
+      111-1-5-0-1409-138(11) Service and Maintenance Agreements-Hospital & Other Institutions
+    </option>
+    <option value="111-2-26-2001(11) Building Rehabilitation-Other Health Institutions">
+      111-2-26-2001(11) Building Rehabilitation-Other Health Institutions
+    </option>
+    <option value="111-2-26-2002(11) Service and Maintenance-Other Health Institutions">
+      111-2-26-2002(11) Service and Maintenance-Other Health Institutions
+    </option>
+    <option value="111-2-26-2103(11) Machinery Purchasing-Other Health Institutions">
+      111-2-26-2103(11) Machinery Purchasing-Other Health Institutions
+    </option>
+    <option value="111-2-20-001-2001(11) Building Rehabilitation-NTS">
+      111-2-20-001-2001(11) Building Rehabilitation-NTS
+    </option>
+    <option value="111-2-20-001-2002(11) Service and Maintenance-NTS">
+      111-2-20-001-2002(11) Service and Maintenance-NTS
+    </option>
+    <option value="111-2-20-001-2103(11) Machinery Purchasing-NTS">
+      111-2-20-001-2103(11) Machinery Purchasing-NTS
+    </option>
+    <option value="111-2-26-008-2001(11) Strengthening Primary Level Health Care">
+      111-2-26-008-2001(11) Strengthening Primary Level Health Care
+    </option>
+    <option value="111-1-2-2001(11) Building and Structures- Ministry Administration">
+      111-1-2-2001(11) Building and Structures- Ministry Administration
+    </option>
+    <option value="111-1-1-2001(11) Building and Structures- Minister Office">
+      111-1-1-2001(11) Building and Structures- Minister Office
+    </option>
+    <option value="111-1-1-2002(11) Plant, Machinery & Equipment Service & Maintenance - Minister Office">
+      111-1-1-2002(11) Plant, Machinery & Equipment Service & Maintenance - Minister Office
+    </option>
+    <option value="111-1-2-2002(11) Plant, Machinery & Equipment Service & Maintenance - Ministry Administration">
+      111-1-2-2002(11) Plant, Machinery & Equipment Service & Maintenance - Ministry Administration
+    </option>
+    <option value="111-1-2-2103(11) Plant, Machinery & Equipment Purchasing - Ministry Administration">
+      111-1-2-2103(11) Plant, Machinery & Equipment Purchasing - Ministry Administration
+    </option>
+  </select>
+</div>
 
-      // Simulate a looping maintenance progress (not actual uptime)
-      let t = 0;
-      function tick(){
-        t += Math.random()*8 + 4; // random increment to feel organic
-        if(t > 100) t = 6; // loop to suggest ongoing work
-        span.style.width = t + '%';
-        progressEl.setAttribute('aria-valuenow', Math.round(t));
-        percentEl.textContent = Math.round(t) + '% complete';
-      }
-      // gentle first-run animation
-      span.style.width = '6%';
-      percentEl.textContent = 'Starting...';
-      setTimeout(()=>{ tick(); }, 600);
-      const timer = setInterval(tick, 1500);
+                    
+                    <div class="form-group">
+                        <label for="jobDescription"><i class="fas fa-file-alt"></i> Job Description *</label>
+                        <textarea id="jobDescription" class="form-control" placeholder="Describe the project..." required></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="allocationAmount"><i class="fas fa-money-bill-wave"></i> Allocation Amount (Rs.) *</label>
+                            <input type="number" id="allocationAmount" class="form-control" placeholder="Enter amount" min="0" step="1000">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="estimateAmount"><i class="fas fa-calculator"></i> Estimate Amount (Rs.) *</label>
+                            <input type="number" id="estimateAmount" class="form-control" placeholder="Enter amount" min="0" step="1000">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="awardingAmount"><i class="fas fa-award"></i> Awarding Amount (Rs.) *</label>
+                            <input type="number" id="awardingAmount" class="form-control" placeholder="Enter amount" min="0" step="1000">
+                        </div>
+                        
+             <div class="form-group">
+  <label for="physicalProgress"><i class="fas fa-tasks"></i> Physical Progress (%)</label>
+  <select id="physicalProgress" class="form-control" required>
+    <option value="">-- Select the Progress Level --</option>
+    <option value="5">5% - Estimate Prepared (01)</option>
+    <option value="10">10% - Estimate Approved (02)</option>
+    <option value="15">15% - Bid Document Prepared (03)</option>
+    <option value="20">20% - Bid Called (04)</option>
+    <option value="25">25% - Bid Closed (05)</option>
+    <option value="30">30% - TEC Appointed (06)</option>
+    <option value="35">35% - TEC Completed (07)</option>
+    <option value="40">40% - Procurement Decision Taken (08)</option>
+    <option value="45">45% - Appeal Period (09)</option>
+    <option value="50">50% - Job Awarded (10)</option>
+    <option value="55">55% - 25% of Job Completed (11)</option>
+    <option value="60">60% - 50% of Job Completed (12)</option>
+    <option value="80">80% - 75% of Job Completed (13)</option>
+    <option value="95">95% - 95% of Job Completed (14)</option>
+    <option value="100">100% - Job Handed Over to the Client (15)</option>
+  </select>
+</div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="advanceAmount"><i class="fas fa-hand-holding-usd"></i> Advance Amount (Rs.)</label>
+                            <input type="number" id="advanceAmount" class="form-control" placeholder="Enter amount" min="0" step="1000">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="bill1"><i class="fas fa-file-invoice-dollar"></i> 1st Bill Amount (Rs.)</label>
+                            <input type="number" id="bill1" class="form-control" placeholder="Enter amount" min="0" step="1000">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="bill2"><i class="fas fa-file-invoice-dollar"></i> 2nd Bill Amount (Rs.)</label>
+                            <input type="number" id="bill2" class="form-control" placeholder="Enter amount" min="0" step="1000">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="bill3"><i class="fas fa-file-invoice-dollar"></i> 3rd Bill Amount (Rs.)</label>
+                            <input type="number" id="bill3" class="form-control" placeholder="Enter amount" min="0" step="1000">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="bill4"><i class="fas fa-file-invoice-dollar"></i> 4th Bill Amount (Rs.)</label>
+                            <input type="number" id="bill4" class="form-control" placeholder="Enter amount" min="0" step="1000">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="bill5"><i class="fas fa-file-invoice-dollar"></i> 5th Bill Amount (Rs.)</label>
+                            <input type="number" id="bill5" class="form-control" placeholder="Enter amount" min="0" step="1000">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="remark"><i class="fas fa-comment"></i> Remarks</label>
+                        <textarea id="remark" class="form-control" placeholder="Additional notes..."></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-outline" onclick="closeModal()">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                        <button type="button" class="btn" onclick="saveProject()">
+                            <i class="fas fa-save"></i> Save Project
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+        
+    <script>
+// Global variables
+let currentUser = null;
+let projects = [];
+let editingProject = null;
+let filteredProjects = [];
+let currentPage = 1;
+const projectsPerPage = 5;
+let hospitals = [
+    "National Hospital Sri Lanka",
+    "Ministry of Health",
+    "Colombo South Teaching Hospital",
+    "Lady Ridgeway Hospital",
+    "Apeksha Hospital Maharagama",
+    "Colombo East Base Hospital Mulleriyawa",
+    "Infections Diseases Hospital",
+    "NIMH",
+    "De Soysa Hospital",
+    "Castle Street Hospital for Women",
+    "National Eye Hospital",
+    "Institute of Oral Health-Maharagama",
+    "National Blood Transfusion Service",
+    "National Institute for Nephrology Dialysis and Transplantation - Maligawatta",
+    "Medical Research Institute",
+    "National Dental Hospital",
+    "Colombo North Teaching Hospital - Ragama",
+    "Rheumatology & Rehabilitation Hospital, Ragama",
+    "District Hospital Kandana",
+    "National Hospital for Respiratory Diseases, Welisara",
+    "Leprosy Hospital - Handala",
+    "DGH Negombo (District General Hospital)",
+    "Teaching Hospital Kalutara",
+    "National Institute of Health Sciences Kalutara",
+    "National Hospital - Kandy",
+    "Base Hospital Gampola",
+    "Teaching Hospital Peradeniya",
+    "Sirimavo Bandaranayake Hospital - Peradeniya",
+    "District General Hospital Nawalapitiya",
+    "District General Hospital NuwaraEliya",
+    "District General Hospital Matale",
+    "National Hospital - Galle (Karapitiya)",
+    "German Sri Lanka Friendship Hospital for Women - Galle (Mahamodara)",
+    "District General Hospital Matara",
+    "District General Hospital Hambantota",
+    "TH Jaffna",
+    "Base Hospital Akkaraipattu",
+    "Ashroff Hospital - Kalmunai",
+    "Base Hospital Kalmunai North",
+    "District General Hospital Ampara",
+    "Base Hospital Pottuvil",
+    "District General Hospital Trincomalee",
+    "District General Hospital Kantale",
+    "Teaching Hospital Batticaloa",
+    "District General Hospital Chilaw",
+    "Teaching Hospital Kurunegala",
+    "Teaching Hospital Kuliyapitiya",
+    "District General Hospital Polonnaruwa",
+    "China Sri Lanka Friendship National Nephrology Specialized Hospital, Polonnaruwa (CKD Hospital)",
+    "TH Anuradhapura",
+    "TH Badulla",
+    "District General Hospital Monaragala",
+    "District General Hospital Kegalle",
+    "Teaching Hospital Ratnapura",
+    "District General Hospital Embilipitiya",
+    "National STD/AIDS Control Programme",
+    "Biomedical Engineering Services",
+    "Epidemiology Unit",
+    "National Cancer Control Programme",
+    "National Programme for Tuberculosis Control & Chest Diseases",
+    "Institute for Forensic Medicine & Toxicology",
+    "Health Promotion Bureau",
+    "Dengue Control Programme",
+    "Anti Malaria Campaign",
+    "Family Health Bureau",
+    "Anti Filariasis Campaign",
+    "Medical Supplies Division",
+    "Public Health Veterinary Services"
+];
 
-      // Buttons (these are local/UX only)
-      refreshBtn.addEventListener('click', ()=>{
-        // small pulse animation
-        refreshBtn.animate([{transform:'scale(1)'},{transform:'scale(0.98)'},{transform:'scale(1)'}],{duration:220});
-        tick();
-      });
-      updatesBtn.addEventListener('click', ()=>{
-        // open a (placeholder) status page in new tab — replace link with real status page
-        window.open('about:blank','_blank');
-      });
+let hospitalChart = null;
+let progressChart = null;
+let financialChart = null;
+let progressDistributionChart = null;
+let voteChart = null;
 
-      // Improve contrast if user prefers reduced motion
-      const media = window.matchMedia('(prefers-reduced-motion: reduce)');
-      if(media.matches){
-        document.querySelectorAll('*').forEach(n=>n.style.animation='none');
-        clearInterval(timer);
-      }
-    })();
-  </script>
+// Navigation function - FIXED
+function showSection(section) {
+    // Hide all sections
+    document.getElementById('dashboardSection').classList.add('hidden');
+    document.getElementById('formsSection').classList.add('hidden');
+    document.getElementById('analyticsSection').classList.add('hidden');
+    document.getElementById('votesSection').classList.add('hidden');
+    document.getElementById('reportsSection').classList.add('hidden');
+    
+    // Remove active class from all tabs
+    document.querySelectorAll('.nav-tab').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    
+    // Show selected section and activate tab
+    if (section === 'dashboard') {
+        document.getElementById('dashboardSection').classList.remove('hidden');
+        document.querySelector('[onclick="showSection(\'dashboard\')"]').classList.add('active');
+        loadProjects();
+    } else if (section === 'forms') {
+        document.getElementById('formsSection').classList.remove('hidden');
+        document.querySelector('[onclick="showSection(\'forms\')"]').classList.add('active');
+    } else if (section === 'analytics') {
+        document.getElementById('analyticsSection').classList.remove('hidden');
+        document.querySelector('[onclick="showSection(\'analytics\')"]').classList.add('active');
+        loadAnalytics();
+    } else if (section === 'votes') {
+        document.getElementById('votesSection').classList.remove('hidden');
+        document.querySelector('[onclick="showSection(\'votes\')"]').classList.add('active');
+        loadVoteDashboard();
+    } else if (section === 'reports') {
+        document.getElementById('reportsSection').classList.remove('hidden');
+        document.querySelector('[onclick="showSection(\'reports\')"]').classList.add('active');
+        loadReportsSection();
+    }
+}
+
+// Configuration - Replace with your Google Apps Script Web App URL
+const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwiiglRhOGEyxiJtqd0SQtUaJT0SbG7Ra43NsIYZRysCPDoWc1NYOcT30UxmjRkGEPb/exec';
+
+// Predefined user credentials
+const USERS = {
+    'admin': { password: 'admin123', type: 'admin', name: 'Administrator' },
+     // Hospitals and Institutions with unique 4-character passwords
+    'Ministry of Health': { password: 'MOH1', type: 'hospital', name: 'Ministry of Health' },
+    'National Hospital Sri Lanka': { password: 'NY70', type: 'hospital', name: 'National Hospital Sri Lanka' },
+    'Colombo South Teaching Hospital': { password: 'FL51', type: 'hospital', name: 'Colombo South Teaching Hospital' },
+    'Lady Ridgeway Hospital': { password: 'YI96', type: 'hospital', name: 'Lady Ridgeway Hospital' },
+    'Apeksha Hospital Maharagama': { password: 'AS66', type: 'hospital', name: 'Apeksha Hospital Maharagama' },
+    'Colombo East Base Hospital Mulleriyawa': { password: 'PX99', type: 'hospital', name: 'Colombo East Base Hospital Mulleriyawa' },
+    'Infections Diseases Hospital': { password: 'KD13', type: 'hospital', name: 'Infections Diseases Hospital' },
+    'NIMH': { password: 'DI93', type: 'hospital', name: 'NIMH' },
+    'De Soysa Hospital': { password: 'KX65', type: 'hospital', name: 'De Soysa Hospital' },
+    'Castle Street Hospital for Women': { password: 'OJ82', type: 'hospital', name: 'Castle Street Hospital for Women' },
+    'National Eye Hospital': { password: 'VV32', type: 'hospital', name: 'National Eye Hospital' },
+    'Institute of Oral Health-Maharagama': { password: 'GX59', type: 'hospital', name: 'Institute of Oral Health-Maharagama' },
+    'National Blood Transfusion Service': { password: 'UY80', type: 'hospital', name: 'National Blood Transfusion Service' },
+    'National Institute for Nephrology Dialysis and Transplantation - Maligawatta': { password: 'GA82', type: 'hospital', name: 'National Institute for Nephrology Dialysis and Transplantation - Maligawatta' },
+    'Medical Research Institute': { password: 'FS03', type: 'hospital', name: 'Medical Research Institute' },
+    'National Dental Hospital': { password: 'JV54', type: 'hospital', name: 'National Dental Hospital' },
+    'Colombo North Teaching Hospital - Ragama': { password: 'FK38', type: 'hospital', name: 'Colombo North Teaching Hospital - Ragama' },
+    'Rheumatology & Rehabilitation Hospital, Ragama': { password: 'PC43', type: 'hospital', name: 'Rheumatology & Rehabilitation Hospital, Ragama' },
+    'District Hospital Kandana': { password: 'DG62', type: 'hospital', name: 'District Hospital Kandana' },
+    'National Hospital for Respiratory Diseases, Welisara': { password: 'CT99', type: 'hospital', name: 'National Hospital for Respiratory Diseases, Welisara' },
+    'Leprosy Hospital - Handala': { password: 'BZ66', type: 'hospital', name: 'Leprosy Hospital - Handala' },
+    'DGH Negombo (District General Hospital)': { password: 'JU15', type: 'hospital', name: 'DGH Negombo (District General Hospital)' },
+    'Teaching Hospital Kalutara': { password: 'AC80', type: 'hospital', name: 'Teaching Hospital Kalutara' },
+    'National Institute of Health Sciences Kalutara': { password: 'EK13', type: 'hospital', name: 'National Institute of Health Sciences Kalutara' },
+    'National Hospital - Kandy': { password: 'FQ00', type: 'hospital', name: 'National Hospital - Kandy' },
+    'Base Hospital Gampola': { password: 'HO03', type: 'hospital', name: 'Base Hospital Gampola' },
+    'Teaching Hospital Peradeniya': { password: 'GL91', type: 'hospital', name: 'Teaching Hospital Peradeniya' },
+    'Sirimavo Bandaranayake Hospital - Peradeniya': { password: 'EU46', type: 'hospital', name: 'Sirimavo Bandaranayake Hospital - Peradeniya' },
+    'District General Hospital Nawalapitiya': { password: 'QU71', type: 'hospital', name: 'District General Hospital Nawalapitiya' },
+    'District General Hospital NuwaraEliya': { password: 'NR42', type: 'hospital', name: 'District General Hospital NuwaraEliya' },
+    'District General Hospital Matale': { password: 'KD59', type: 'hospital', name: 'District General Hospital Matale' },
+    'National Hospital - Galle (Karapitiya)': { password: 'FH55', type: 'hospital', name: 'National Hospital - Galle (Karapitiya)' },
+    'German Sri Lanka Friendship Hospital for Women - Galle (Mahamodara)': { password: 'KB56', type: 'hospital', name: 'German Sri Lanka Friendship Hospital for Women - Galle (Mahamodara)' },
+    'District General Hospital Matara': { password: 'KL66', type: 'hospital', name: 'District General Hospital Matara' },
+    'District General Hospital Hambantota': { password: 'SW36', type: 'hospital', name: 'District General Hospital Hambantota' },
+    'TH Jaffna': { password: 'FO55', type: 'hospital', name: 'TH Jaffna' },
+    'Base Hospital Akkaraipattu': { password: 'JJ19', type: 'hospital', name: 'Base Hospital Akkaraipattu' },
+    'Ashroff Hospital - Kalmunai': { password: 'HU87', type: 'hospital', name: 'Ashroff Hospital - Kalmunai' },
+    'Base Hospital Kalmunai North': { password: 'NQ73', type: 'hospital', name: 'Base Hospital Kalmunai North' },
+    'District General Hospital Ampara': { password: 'DP44', type: 'hospital', name: 'District General Hospital Ampara' },
+    'Base Hospital Pottuvil': { password: 'GM53', type: 'hospital', name: 'Base Hospital Pottuvil' },
+    'District General Hospital Trincomalee': { password: 'CS47', type: 'hospital', name: 'District General Hospital Trincomalee' },
+    'District General Hospital Kantale': { password: 'KM95', type: 'hospital', name: 'District General Hospital Kantale' },
+    'Teaching Hospital Batticaloa': { password: 'NS13', type: 'hospital', name: 'Teaching Hospital Batticaloa' },
+    'District General Hospital Chilaw': { password: 'RM10', type: 'hospital', name: 'District General Hospital Chilaw' },
+    'Teaching Hospital Kurunegala': { password: 'AL07', type: 'hospital', name: 'Teaching Hospital Kurunegala' },
+    'Teaching Hospital Kuliyapitiya': { password: 'RO70', type: 'hospital', name: 'Teaching Hospital Kuliyapitiya' },
+    'District General Hospital Polonnaruwa': { password: 'IX38', type: 'hospital', name: 'District General Hospital Polonnaruwa' },
+    'China Sri Lanka Friendship National Nephrology Specialized Hospital, Polonnaruwa (CKD Hospital)': { password: 'PQ56', type: 'hospital', name: 'China Sri Lanka Friendship National Nephrology Specialized Hospital, Polonnaruwa (CKD Hospital)' },
+    'TH Anuradhapura': { password: 'JS41', type: 'hospital', name: 'TH Anuradhapura' },
+    'TH Badulla': { password: 'RG46', type: 'hospital', name: 'TH Badulla' },
+    'District General Hospital Monaragala': { password: 'LT92', type: 'hospital', name: 'District General Hospital Monaragala' },
+    'District General Hospital Kegalle': { password: 'RB97', type: 'hospital', name: 'District General Hospital Kegalle' },
+    'Teaching Hospital Ratnapura': { password: 'VG00', type: 'hospital', name: 'Teaching Hospital Ratnapura' },
+    'District General Hospital Embilipitiya': { password: 'OS11', type: 'hospital', name: 'District General Hospital Embilipitiya' },
+    'National STD/AIDS Control Programme': { password: 'AJ29', type: 'hospital', name: 'National STD/AIDS Control Programme' },
+    'Biomedical Engineering Services': { password: 'DD18', type: 'hospital', name: 'Biomedical Engineering Services' },
+    'Epidemiology Unit': { password: 'ZS11', type: 'hospital', name: 'Epidemiology Unit' },
+    'National Cancer Control Programme': { password: 'DP63', type: 'hospital', name: 'National Cancer Control Programme' },
+    'National Programme for Tuberculosis Control & Chest Diseases': { password: 'XK38', type: 'hospital', name: 'National Programme for Tuberculosis Control & Chest Diseases' },
+    'Institute for Forensic Medicine & Toxicology': { password: 'VQ40', type: 'hospital', name: 'Institute for Forensic Medicine & Toxicology' },
+    'Health Promotion Bureau': { password: 'ZJ89', type: 'hospital', name: 'Health Promotion Bureau' },
+    'Dengue Control Programme': { password: 'EP19', type: 'hospital', name: 'Dengue Control Programme' },
+    'Anti Malaria Campaign': { password: 'KT89', type: 'hospital', name: 'Anti Malaria Campaign' },
+    'Family Health Bureau': { password: 'KE01', type: 'hospital', name: 'Family Health Bureau' },
+    'Anti Filariasis Campaign': { password: 'NA67', type: 'hospital', name: 'Anti Filariasis Campaign' },
+    'Medical Supplies Division': { password: 'XP08', type: 'hospital', name: 'Medical Supplies Division' },
+    'Public Health Veterinary Services': { password: 'FV19', type: 'hospital', name: 'Public Health Veterinary Services' }
+};
+
+// Utility functions for consistent progress calculations
+function calculateFinancialProgress(project) {
+    const totalBills = (project.bill1 || 0) + (project.bill2 || 0) + (project.bill3 || 0) + 
+                      (project.bill4 || 0) + (project.bill5 || 0);
+    return project.awardingAmount > 0 ? ((totalBills / project.awardingAmount) * 100) : 0;
+}
+
+function calculateAveragePhysicalProgress(projects) {
+    if (projects.length === 0) return 0;
+    return projects.reduce((sum, p) => sum + p.physicalProgress, 0) / projects.length;
+}
+
+function calculateAverageFinancialProgress(projects) {
+    if (projects.length === 0) return 0;
+    
+    let totalWeightedProgress = 0;
+    let totalWeight = 0;
+    
+    projects.forEach(project => {
+        const financialProgress = calculateFinancialProgress(project);
+        totalWeightedProgress += financialProgress * project.awardingAmount;
+        totalWeight += project.awardingAmount;
+    });
+    
+    return totalWeight > 0 ? totalWeightedProgress / totalWeight : 0;
+}
+
+function calculateTotalBills(project) {
+    return (project.bill1 || 0) + (project.bill2 || 0) + (project.bill3 || 0) + 
+           (project.bill4 || 0) + (project.bill5 || 0);
+}
+
+// Authentication Function - FIXED
+async function login() {
+    const username = document.getElementById('hospitalName').value;
+    const password = document.getElementById('password').value;
+
+    if (!username || !password) {
+        alert('Please enter both username and password');
+        return;
+    }
+
+    try {
+        showLoading(true);
+        
+        // Check credentials
+        if (USERS[username] && USERS[username].password === password) {
+            currentUser = USERS[username];
+            
+            // Hide login form and show main app
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+            document.getElementById('userInfo').textContent = `Logged in as: ${currentUser.name}`;
+            document.getElementById('userAvatar').textContent = currentUser.name.charAt(0);
+            
+            // Show/hide admin-only features - FIXED
+            if (currentUser.type === 'admin') {
+                document.getElementById('adminFilters').classList.remove('hidden');
+                document.getElementById('analyticsTab').classList.remove('hidden');
+                document.getElementById('votesTab').classList.remove('hidden');
+                document.getElementById('reportsTab').classList.remove('hidden');
+                populateHospitalFilter();
+            } else {
+                document.getElementById('adminFilters').classList.add('hidden');
+                document.getElementById('analyticsTab').classList.add('hidden');
+                document.getElementById('votesTab').classList.add('hidden');
+                document.getElementById('reportsTab').classList.add('hidden');
+            }
+            
+            // Load dashboard
+            await loadDashboard();
+        } else {
+            alert('Invalid username or password');
+        }
+    } catch (error) {
+        console.error('Login error:', error);
+        alert('Login error. Please try again.');
+    } finally {
+        showLoading(false);
+    }
+}
+
+// Populate hospital filter dropdown
+function populateHospitalFilter() {
+    const hospitalFilter = document.getElementById('hospitalFilter');
+    hospitalFilter.innerHTML = '<option value="">All Hospitals</option>';
+    
+    hospitals.forEach(hospital => {
+        const option = document.createElement('option');
+        option.value = hospital;
+        option.textContent = hospital;
+        hospitalFilter.appendChild(option);
+    });
+}
+
+// Load Dashboard Function
+async function loadDashboard() {
+    await loadProjects(); // Call loadProjects instead of duplicating code
+}
+
+// Load Projects Function - FIXED
+async function loadProjects() {
+    try {
+        showLoading(true);
+        
+        if (GAS_WEB_APP_URL && GAS_WEB_APP_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_URL') {
+            // Try to load from Google Apps Script
+            const projectsResponse = await fetch(GAS_WEB_APP_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `action=getProjects&data=${encodeURIComponent(JSON.stringify({
+                    userType: currentUser.type,
+                    hospitalName: currentUser.name
+                }))}`
+            });
+
+            const projectsResult = await projectsResponse.json();
+            
+            if (projectsResult.success) {
+                projects = projectsResult.projects.map(project => ({
+                    id: project.ID,
+                    hospitalNameForm: project['Hospital Name'],
+                    vote: project.Vote,
+                    allocationAmount: project['Allocation Amount'] || 0,
+                    jobDescription: project['Job Description'],
+                    estimateAmount: project['Estimate Amount'] || 0,
+                    awardingAmount: project['Awarding Amount'] || 0,
+                    physicalProgress: project['Physical Progress'] || 0,
+                    advanceAmount: project['Advance Amount'] || 0,
+                    bill1: project['1st Bill'] || 0,
+                    bill2: project['2nd Bill'] || 0,
+                    bill3: project['3rd Bill'] || 0,
+                    bill4: project['4th Bill'] || 0,
+                    bill5: project['5th Bill'] || 0,
+                    financialProgress: project['Financial Progress'] || 0,
+                    remark: project.Remark || '',
+                    createdDate: project['Created Date'] ? new Date(project['Created Date']) : new Date()
+                }));
+            } else {
+                // Fall back to sample data if backend fails
+                loadSampleData();
+            }
+        } else {
+            // Load sample data if no backend configured
+            loadSampleData();
+        }
+        
+        // Add created date to sample data
+        projects.forEach(project => {
+            if (!project.createdDate) {
+                project.createdDate = new Date();
+            }
+        });
+        
+        displayStats();
+        filterProjects();
+        
+    } catch (error) {
+        console.error('Load dashboard error:', error);
+        // Fall back to sample data on error
+        loadSampleData();
+        displayStats();
+        filterProjects();
+    } finally {
+        showLoading(false);
+    }
+}
+
+// Load sample data for demonstration
+function loadSampleData() {
+    projects = [
+        {
+            id: 1,
+            hospitalNameForm: 'National Hospital Sri Lanka',
+            vote: '111-1-5-2001(11) Building Rehabilitation-Hospital',
+            allocationAmount: 5000000,
+            jobDescription: 'Emergency Ward Renovation',
+            estimateAmount: 4800000,
+            awardingAmount: 4500000,
+            physicalProgress: 75,
+            advanceAmount: 1000000,
+            bill1: 800000,
+            bill2: 900000,
+            bill3: 700000,
+            bill4: 0,
+            bill5: 0,
+            remark: 'Work in progress',
+            createdDate: new Date(2023, 5, 15)
+        },
+        {
+            id: 2,
+            hospitalNameForm: 'Teaching Hospital Kandy',
+            vote: '111-1-5-2002(11) Service and Maintenance-Hospital',
+            allocationAmount: 3000000,
+            jobDescription: 'Laboratory Equipment Purchase',
+            estimateAmount: 2900000,
+            awardingAmount: 2800000,
+            physicalProgress: 100,
+            advanceAmount: 500000,
+            bill1: 800000,
+            bill2: 750000,
+            bill3: 650000,
+            bill4: 600000,
+            bill5: 0,
+            remark: 'Completed',
+            createdDate: new Date(2023, 4, 10)
+        },
+        {
+            id: 3,
+            hospitalNameForm: 'Colombo South Teaching Hospital',
+            vote: '111-1-5-2103(11) Machinery Purchasing-Hospitals',
+            allocationAmount: 8000000,
+            jobDescription: 'New ICU Construction',
+            estimateAmount: 7800000,
+            awardingAmount: 7500000,
+            physicalProgress: 45,
+            advanceAmount: 1500000,
+            bill1: 1200000,
+            bill2: 1100000,
+            bill3: 800000,
+            bill4: 0,
+            bill5: 0,
+            remark: 'Foundation work completed',
+            createdDate: new Date(2023, 6, 1)
+        },
+        {
+            id: 4,
+            hospitalNameForm: 'Lady Ridgeway Hospital',
+            vote: '111-1-5-0-1409-138(11) Service and Maintenance Agreements-Hospital & Other Institutions',
+            allocationAmount: 2500000,
+            jobDescription: 'Staff Quarters Repair',
+            estimateAmount: 2400000,
+            awardingAmount: 2200000,
+            physicalProgress: 90,
+            advanceAmount: 500000,
+            bill1: 600000,
+            bill2: 550000,
+            bill3: 450000,
+            bill4: 400000,
+            bill5: 0,
+            remark: 'Final phase',
+            createdDate: new Date(2023, 5, 20)
+        },
+        {
+            id: 5,
+            hospitalNameForm: 'DGH Negombo (District General Hospital)',
+            vote: '111-2-26-2001(11) Building Rehabilitation-Other Health Institutions',
+            allocationAmount: 3500000,
+            jobDescription: 'Pediatric Ward Expansion',
+            estimateAmount: 3400000,
+            awardingAmount: 3200000,
+            physicalProgress: 60,
+            advanceAmount: 700000,
+            bill1: 500000,
+            bill2: 450000,
+            bill3: 400000,
+            bill4: 0,
+            bill5: 0,
+            remark: 'On schedule',
+            createdDate: new Date(2023, 6, 5)
+        },
+        {
+            id: 6,
+            hospitalNameForm: 'National Hospital Sri Lanka',
+            vote: '111-2-26-2002(11) Service and Maintenance-Other Health Institutions',
+            allocationAmount: 4200000,
+            jobDescription: 'CT Scanner Installation',
+            estimateAmount: 4100000,
+            awardingAmount: 4000000,
+            physicalProgress: 100,
+            advanceAmount: 1000000,
+            bill1: 1000000,
+            bill2: 1000000,
+            bill3: 1000000,
+            bill4: 1000000,
+            bill5: 0,
+            remark: 'Completed and operational',
+            createdDate: new Date(2023, 4, 25)
+        }
+    ];
+
+    // Filter projects based on user type
+    if (currentUser.type === 'hospital') {
+        projects = projects.filter(project => project.hospitalNameForm === currentUser.name);
+    }
+}
+
+// Filter and sort projects
+function filterProjects() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const hospitalFilter = document.getElementById('hospitalFilter')?.value || '';
+    const progressFilter = document.getElementById('progressFilter')?.value || '';
+    const sortOption = document.getElementById('sortSelect')?.value || 'date-desc';
+    
+    filteredProjects = projects.filter(project => {
+        // Search filter
+        const matchesSearch = 
+            project.hospitalNameForm.toLowerCase().includes(searchTerm) ||
+            project.vote.toLowerCase().includes(searchTerm) ||
+            project.jobDescription.toLowerCase().includes(searchTerm);
+        
+        // Hospital filter (admin only)
+        const matchesHospital = hospitalFilter ? project.hospitalNameForm === hospitalFilter : true;
+        
+        // Progress filter
+        let matchesProgress = true;
+        if (progressFilter) {
+            if (progressFilter === '100') {
+                matchesProgress = project.physicalProgress === 100;
+            } else if (progressFilter === '0-25') {
+                matchesProgress = project.physicalProgress >= 0 && project.physicalProgress <= 25;
+            } else if (progressFilter === '26-50') {
+                matchesProgress = project.physicalProgress >= 26 && project.physicalProgress <= 50;
+            } else if (progressFilter === '51-75') {
+                matchesProgress = project.physicalProgress >= 51 && project.physicalProgress <= 75;
+            } else if (progressFilter === '76-99') {
+                matchesProgress = project.physicalProgress >= 76 && project.physicalProgress <= 99;
+            }
+        }
+        
+        return matchesSearch && matchesHospital && matchesProgress;
+    });
+    
+    // Sort projects
+    filteredProjects.sort((a, b) => {
+        switch(sortOption) {
+            case 'date-asc':
+                return a.createdDate - b.createdDate;
+            case 'date-desc':
+                return b.createdDate - a.createdDate;
+            case 'progress-asc':
+                return a.physicalProgress - b.physicalProgress;
+            case 'progress-desc':
+                return b.physicalProgress - a.physicalProgress;
+            case 'name-asc':
+                return a.hospitalNameForm.localeCompare(b.hospitalNameForm);
+            case 'name-desc':
+                return b.hospitalNameForm.localeCompare(a.hospitalNameForm);
+            default:
+                return b.createdDate - a.createdDate;
+        }
+    });
+    
+    currentPage = 1;
+    displayProjects();
+    displayHospitalSummary();
+}
+
+// Display hospital summary - FIXED with proper progress calculations
+function displayHospitalSummary() {
+    if (currentUser.type !== 'admin') {
+        document.getElementById('hospitalSummary').innerHTML = '';
+        return;
+    }
+    
+    const hospitalFilter = document.getElementById('hospitalFilter').value;
+    const hospitalProjects = hospitalFilter ? 
+        projects.filter(p => p.hospitalNameForm === hospitalFilter) : 
+        projects;
+    
+    if (hospitalProjects.length === 0) {
+        document.getElementById('hospitalSummary').innerHTML = '';
+        return;
+    }
+    
+    const stats = hospitalProjects.reduce((acc, project) => {
+        const totalBills = calculateTotalBills(project);
+        
+        acc.totalProjects++;
+        acc.totalAllocation += project.allocationAmount;
+        acc.totalAwarded += project.awardingAmount;
+        acc.totalBills += totalBills;
+        acc.totalPhysicalProgress += project.physicalProgress;
+        
+        // Calculate financial progress for this project
+        const financialProgress = calculateFinancialProgress(project);
+        acc.totalFinancialProgress += financialProgress * project.awardingAmount; // Weight by awarding amount
+        acc.totalWeight += project.awardingAmount;
+        
+        if (project.physicalProgress === 100) acc.completedProjects++;
+        return acc;
+    }, {
+        totalProjects: 0,
+        totalAllocation: 0,
+        totalAwarded: 0,
+        totalBills: 0,
+        totalPhysicalProgress: 0,
+        totalFinancialProgress: 0,
+        totalWeight: 0,
+        completedProjects: 0
+    });
+    
+    const avgPhysicalProgress = stats.totalProjects > 0 ? 
+        (stats.totalPhysicalProgress / stats.totalProjects).toFixed(1) : 0;
+    
+    const avgFinancialProgress = stats.totalWeight > 0 ? 
+        (stats.totalFinancialProgress / stats.totalWeight).toFixed(1) : 0;
+    
+    document.getElementById('hospitalSummary').innerHTML = `
+        <div class="hospital-summary">
+            <h3><i class="fas fa-hospital"></i> ${hospitalFilter || 'All Hospitals'} Summary</h3>
+            <div class="summary-stats">
+                <div>Total Projects: <span>${stats.totalProjects}</span></div>
+                <div>Completed: <span>${stats.completedProjects}</span></div>
+                <div>Allocation: <span>Rs. ${stats.totalAllocation.toLocaleString()}</span></div>
+                <div>Awarded: <span>Rs. ${stats.totalAwarded.toLocaleString()}</span></div>
+                <div>Payments: <span>Rs. ${stats.totalBills.toLocaleString()}</span></div>
+                <div>Avg. Physical Progress: <span>${avgPhysicalProgress}%</span></div>
+                <div>Avg. Financial Progress: <span>${avgFinancialProgress}%</span></div>
+            </div>
+        </div>
+    `;
+}
+
+// Clear search and filters
+function clearSearch() {
+    document.getElementById('searchInput').value = '';
+    if (document.getElementById('hospitalFilter')) {
+        document.getElementById('hospitalFilter').value = '';
+    }
+    if (document.getElementById('progressFilter')) {
+        document.getElementById('progressFilter').value = '';
+    }
+    filterProjects();
+}
+
+// Save Project Function
+async function saveProject() {
+    const formData = getFormData();
+    
+    if (!validateForm(formData)) {
+        return;
+    }
+
+    try {
+        showLoading(true);
+        
+        if (GAS_WEB_APP_URL && GAS_WEB_APP_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_URL') {
+            // Add ID if editing
+            if (editingProject) {
+                formData.id = editingProject.id;
+            }
+
+            const response = await fetch(GAS_WEB_APP_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `action=saveProject&data=${encodeURIComponent(JSON.stringify(formData))}`
+            });
+
+            const result = await response.json();
+            
+            if (result.success) {
+                await loadDashboard();
+                closeModal();
+                alert('Project saved successfully!');
+            } else {
+                alert(result.error || 'Save failed');
+            }
+        } else {
+            // Local storage for demo
+            saveProjectLocally(formData);
+        }
+    } catch (error) {
+        console.error('Save error:', error);
+        // Fall back to local storage
+        saveProjectLocally(formData);
+    } finally {
+        showLoading(false);
+    }
+}
+
+// Save project locally
+function saveProjectLocally(formData) {
+    if (editingProject) {
+        // Update existing project
+        const index = projects.findIndex(p => p.id === editingProject.id);
+        if (index !== -1) {
+            projects[index] = { 
+                ...projects[index], // Keep existing properties
+                ...formData, // Update with new form data
+                id: editingProject.id, // Preserve ID
+                createdDate: projects[index].createdDate // Preserve creation date
+            };
+        }
+    } else {
+        // Add new project
+        const newId = Math.max(...projects.map(p => p.id), 0) + 1;
+        projects.push({ 
+            ...formData, 
+            id: newId, 
+            createdDate: new Date() 
+        });
+    }
+    
+    displayStats();
+    filterProjects();
+    closeModal();
+    alert('Project saved successfully!');
+}
+
+// Get form data - FIXED to properly handle physical progress
+function getFormData() {
+    const getNumericValue = (id) => {
+        const val = document.getElementById(id).value.trim();
+        // Return 0 if field is blank, otherwise convert to number
+        if (val === "") return 0;
+        const num = Number(val);
+        return isNaN(num) ? 0 : num;
+    };
+
+    return {
+        hospitalNameForm: document.getElementById('hospitalNameForm').value,
+        vote: document.getElementById('vote').value,
+        jobDescription: document.getElementById('jobDescription').value,
+        allocationAmount: getNumericValue('allocationAmount'),
+        estimateAmount: getNumericValue('estimateAmount'),
+        awardingAmount: getNumericValue('awardingAmount'),
+        advanceAmount: getNumericValue('advanceAmount'),
+        physicalProgress: getNumericValue('physicalProgress'),
+        bill1: getNumericValue('bill1'),
+        bill2: getNumericValue('bill2'),
+        bill3: getNumericValue('bill3'),
+        bill4: getNumericValue('bill4'),
+        bill5: getNumericValue('bill5'),
+        remark: document.getElementById('remark').value
+    };
+}
+
+// Display statistics - FIXED with proper progress calculations
+function displayStats() {
+    const statsContainer = document.getElementById('dashboardStats');
+    const totalProjects = projects.length;
+    const completedProjects = projects.filter(p => p.physicalProgress === 100).length;
+    const totalAllocation = projects.reduce((sum, p) => sum + p.allocationAmount, 0);
+    const totalAwarded = projects.reduce((sum, p) => sum + p.awardingAmount, 0);
+    const totalBills = projects.reduce((sum, p) => {
+        return sum + (p.bill1 || 0) + (p.bill2 || 0) + (p.bill3 || 0) + (p.bill4 || 0) + (p.bill5 || 0);
+    }, 0);
+    
+    // Calculate average physical progress (simple average)
+    const avgPhysicalProgress = calculateAveragePhysicalProgress(projects);
+    
+    // Calculate average financial progress (weighted by awarding amount)
+    const avgFinancialProgress = calculateAverageFinancialProgress(projects);
+
+    statsContainer.innerHTML = `
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-project-diagram"></i></div>
+            <div class="stat-number">${totalProjects}</div>
+            <p>Total Projects</p>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+            <div class="stat-number">${completedProjects}</div>
+            <p>Completed</p>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-money-bill-wave"></i></div>
+            <div class="stat-number">Rs. ${(totalAllocation/1000000).toFixed(1)}M</div>
+            <p>Total Allocation</p>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-trophy"></i></div>
+            <div class="stat-number">Rs. ${(totalAwarded/1000000).toFixed(1)}M</div>
+            <p>Total Awarded</p>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-receipt"></i></div>
+            <div class="stat-number">Rs. ${(totalBills/1000000).toFixed(1)}M</div>
+            <p>Total Payments</p>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+            <div class="stat-number">${avgPhysicalProgress.toFixed(1)}%</div>
+            <p>Avg Physical Progress</p>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-chart-bar"></i></div>
+            <div class="stat-number">${avgFinancialProgress.toFixed(1)}%</div>
+            <p>Avg Financial Progress</p>
+        </div>
+    `;
+}
+
+// Display projects with pagination
+function displayProjects() {
+    const projectsContainer = document.getElementById('projectsGrid');
+    const paginationContainer = document.getElementById('paginationControls');
+    
+    // Calculate pagination
+    const startIndex = (currentPage - 1) * projectsPerPage;
+    const endIndex = Math.min(startIndex + projectsPerPage, filteredProjects.length);
+    const paginatedProjects = filteredProjects.slice(startIndex, endIndex);
+    const totalPages = Math.ceil(filteredProjects.length / projectsPerPage);
+    
+    if (filteredProjects.length === 0) {
+        projectsContainer.innerHTML = '<div class="no-results" style="text-align: center; padding: 40px; font-size: 1.2rem; color: var(--gray);"><i class="fas fa-search" style="font-size: 3rem; margin-bottom: 20px; display: block;"></i>No projects found matching your criteria.</div>';
+        paginationContainer.innerHTML = '';
+        return;
+    }
+
+    projectsContainer.innerHTML = paginatedProjects.map(project => {
+        const totalBills = calculateTotalBills(project);
+        const financialProgress = calculateFinancialProgress(project);
+        
+        return `
+            <div class="project-card">
+                <div class="project-header">
+                    <div>
+                        <h3>${project.vote}</h3>
+                        <span>${project.hospitalNameForm}</span>
+                    </div>
+                    <div class="project-actions">
+                        ${currentUser.type === 'admin' || currentUser.name === project.hospitalNameForm ? 
+                            `<button class="btn" onclick="editProject(${project.id})" style="padding: 8px 15px; font-size: 14px;"><i class="fas fa-edit"></i></button>
+                             <button class="btn btn-secondary" onclick="deleteProject(${project.id})" style="padding: 8px 15px; font-size: 14px;"><i class="fas fa-trash"></i></button>` : 
+                            ''
+                        }
+                    </div>
+                </div>
+                
+                <p class="project-description">${project.jobDescription}</p>
+                
+                <div class="financial-summary">
+                    <div class="financial-item">
+                        <span>Allocation:</span>
+                        <span>Rs. ${project.allocationAmount.toLocaleString()}</span>
+                    </div>
+                    <div class="financial-item">
+                        <span>Awarded:</span>
+                        <span>Rs. ${project.awardingAmount.toLocaleString()}</span>
+                    </div>
+                    <div class="financial-item">
+                        <span>Bills Paid:</span>
+                        <span>Rs. ${totalBills.toLocaleString()}</span>
+                    </div>
+                </div>
+                
+                <div class="progress-container">
+                    <div class="progress-header">
+                        <span>Physical Progress</span>
+                        <span>${project.physicalProgress}%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${project.physicalProgress}%"></div>
+                    </div>
+                </div>
+                
+                <div class="progress-container">
+                    <div class="progress-header">
+                        <span>Financial Progress</span>
+                        <span>${financialProgress.toFixed(1)}%</span>
+                    </div>
+                    <div class="progress-bar financial-progress">
+                        <div class="progress-fill" style="width: ${financialProgress}%"></div>
+                    </div>
+                </div>
+                
+                ${project.remark ? `<div class="project-remark"><strong>Remark:</strong> ${project.remark}</div>` : ''}
+            </div>
+        `;
+    }).join('');
+    
+    let paginationHTML = '';
+
+    if (totalPages > 1) {
+        // Previous Button
+        paginationHTML += `
+            <button class="btn ${currentPage === 1 ? 'btn-outline' : ''}" 
+                    onclick="changePage(${currentPage - 1})" 
+                    ${currentPage === 1 ? 'disabled' : ''}>
+                <i class="fas fa-chevron-left"></i> Previous
+            </button>
+        `;
+
+        // Pages around current
+        for (let i = Math.max(1, currentPage - 1); i <= Math.min(totalPages, currentPage + 1); i++) {
+            paginationHTML += `
+                <button class="btn ${i === currentPage ? 'btn-success' : 'btn-outline'}" 
+                        onclick="changePage(${i})">
+                    ${i}
+                </button>
+            `;
+        }
+
+        // Next Button
+        paginationHTML += `
+            <button class="btn ${currentPage === totalPages ? 'btn-outline' : ''}" 
+                    onclick="changePage(${currentPage + 1})" 
+                    ${currentPage === totalPages ? 'disabled' : ''}>
+                Next <i class="fas fa-chevron-right"></i>
+            </button>
+        `;
+    }
+    
+    paginationContainer.innerHTML = paginationHTML;
+}
+
+// Change page function
+function changePage(page) {
+    currentPage = page;
+    displayProjects();
+}
+
+// Modal functions
+function openModal() {
+    editingProject = null;
+    document.getElementById('modalTitle').innerHTML = '<i class="fas fa-file-medical"></i> Add New Project';
+    document.getElementById('projectForm').reset();
+    
+    // Set hospital name for non-admin users
+    if (currentUser.type === 'hospital') {
+        document.getElementById('hospitalNameForm').value = currentUser.name;
+        document.getElementById('hospitalNameForm').disabled = true;
+    } else {
+        document.getElementById('hospitalNameForm').disabled = false;
+    }
+    
+    document.getElementById('projectModal').style.display = 'flex';
+}
+
+function closeModal() {
+    document.getElementById('projectModal').style.display = 'none';
+    editingProject = null;
+}
+
+function editProject(id) {
+    const project = projects.find(p => p.id === id);
+    if (!project) return;
+
+    editingProject = project;
+    document.getElementById('modalTitle').innerHTML = '<i class="fas fa-edit"></i> Edit Project';
+    
+    // Populate form with project data
+    document.getElementById('hospitalNameForm').value = project.hospitalNameForm;
+    document.getElementById('vote').value = project.vote;
+    document.getElementById('allocationAmount').value = project.allocationAmount;
+    document.getElementById('jobDescription').value = project.jobDescription;
+    document.getElementById('estimateAmount').value = project.estimateAmount;
+    document.getElementById('awardingAmount').value = project.awardingAmount;
+    document.getElementById('physicalProgress').value = project.physicalProgress;
+    document.getElementById('advanceAmount').value = project.advanceAmount || '';
+    document.getElementById('bill1').value = project.bill1 || '';
+    document.getElementById('bill2').value = project.bill2 || '';
+    document.getElementById('bill3').value = project.bill3 || '';
+    document.getElementById('bill4').value = project.bill4 || '';
+    document.getElementById('bill5').value = project.bill5 || '';
+    document.getElementById('remark').value = project.remark || '';
+    
+    // Set hospital name restrictions for non-admin users
+    if (currentUser.type === 'hospital') {
+        document.getElementById('hospitalNameForm').disabled = true;
+    } else {
+        document.getElementById('hospitalNameForm').disabled = false;
+    }
+    
+    document.getElementById('projectModal').style.display = 'flex';
+}
+
+// Delete Project Function
+async function deleteProject(id) {
+    if (!confirm('Are you sure you want to delete this project?')) {
+        return;
+    }
+
+    try {
+        showLoading(true);
+        
+        if (GAS_WEB_APP_URL && GAS_WEB_APP_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_URL') {
+            const response = await fetch(GAS_WEB_APP_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `action=deleteProject&data=${encodeURIComponent(JSON.stringify({ id: id }))}`
+            });
+
+            const result = await response.json();
+            
+            if (result.success) {
+                await loadDashboard();
+                alert('Project deleted successfully!');
+            } else {
+                alert(result.error || 'Delete failed');
+            }
+        } else {
+            // Local delete for demo
+            projects = projects.filter(p => p.id !== id);
+            displayStats();
+            filterProjects();
+            alert('Project deleted successfully!');
+        }
+    } catch (error) {
+        console.error('Delete error:', error);
+        // Fall back to local delete
+        projects = projects.filter(p => p.id !== id);
+        displayStats();
+        filterProjects();
+        alert('Project deleted successfully!');
+    } finally {
+        showLoading(false);
+    }
+}
+
+// Load analytics data
+function loadAnalytics() {
+    if (!currentUser || currentUser.type !== 'admin') return;
+    
+    const hospitalFilter = document.getElementById('analyticsHospitalFilter').value;
+    const filtered = hospitalFilter ? projects.filter(p => p.hospitalNameForm === hospitalFilter) : projects;
+    
+    // Update hospital filter dropdown
+    populateAnalyticsHospitalFilter();
+    
+    // Destroy existing charts if they exist
+    if (hospitalChart) hospitalChart.destroy();
+    if (progressChart) progressChart.destroy();
+    if (financialChart) financialChart.destroy();
+    if (progressDistributionChart) progressDistributionChart.destroy();
+    
+    // Projects by Hospital
+    if (!hospitalFilter) {
+        const hospitals = [...new Set(projects.map(p => p.hospitalNameForm))];
+        const counts = hospitals.map(hospital => 
+            projects.filter(p => p.hospitalNameForm === hospital).length
+        );
+        
+        const ctx1 = document.getElementById('hospitalChart').getContext('2d');
+        hospitalChart = new Chart(ctx1, {
+            type: 'bar',
+            data: {
+                labels: hospitals,
+                datasets: [{
+                    label: 'Number of Projects',
+                    data: counts,
+                    backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                }
+            }
+        });
+    } else {
+        document.getElementById('hospitalChart').innerHTML = '<p style="text-align: center; padding: 40px; color: var(--gray);">Select "All Hospitals" to see distribution by hospital</p>';
+    }
+    
+    // Projects by Progress
+    const progressRanges = [
+        { label: '0-25%', min: 0, max: 25 },
+        { label: '26-50%', min: 26, max: 50 },
+        { label: '51-75%', min: 51, max: 75 },
+        { label: '76-99%', min: 76, max: 99 },
+        { label: '100%', min: 100, max: 100 }
+    ];
+    
+    const progressCounts = progressRanges.map(range => 
+        filtered.filter(p => p.physicalProgress >= range.min && p.physicalProgress <= range.max).length
+    );
+    
+    const ctx2 = document.getElementById('progressChart').getContext('2d');
+    progressChart = new Chart(ctx2, {
+        type: 'pie',
+        data: {
+            labels: progressRanges.map(r => r.label),
+            datasets: [{
+                data: progressCounts,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.7)',
+                    'rgba(54, 162, 235, 0.7)',
+                    'rgba(255, 206, 86, 0.7)',
+                    'rgba(75, 192, 192, 0.7)',
+                    'rgba(153, 102, 255, 0.7)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+    
+    // Financial Allocation vs Spending
+    const hospitalsForFinance = [...new Set(filtered.map(p => p.hospitalNameForm))];
+    const allocationData = hospitalsForFinance.map(hospital => 
+        filtered.filter(p => p.hospitalNameForm === hospital)
+            .reduce((sum, p) => sum + p.allocationAmount, 0)
+    );
+    
+    const spendingData = hospitalsForFinance.map(hospital => 
+        filtered.filter(p => p.hospitalNameForm === hospital)
+            .reduce((sum, p) => sum + calculateTotalBills(p), 0)
+    );
+    
+    const ctx3 = document.getElementById('financialChart').getContext('2d');
+    financialChart = new Chart(ctx3, {
+        type: 'bar',
+        data: {
+            labels: hospitalsForFinance,
+            datasets: [
+                {
+                    label: 'Allocation',
+                    data: allocationData,
+                    backgroundColor: 'rgba(75, 192, 192, 0.7)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Spending',
+                    data: spendingData,
+                    backgroundColor: 'rgba(255, 159, 64, 0.7)',
+                    borderColor: 'rgba(255, 159, 64, 1)',
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+    
+    // Progress Distribution
+    const progressData = filtered.map(p => p.physicalProgress);
+    const ctx4 = document.getElementById('progressDistributionChart').getContext('2d');
+    progressDistributionChart = new Chart(ctx4, {
+        type: 'line',
+        data: {
+            labels: filtered.map((_, i) => `Project ${i + 1}`),
+            datasets: [{
+                label: 'Physical Progress',
+                data: progressData,
+                backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                borderColor: 'rgba(153, 102, 255, 1)',
+                borderWidth: 2,
+                pointRadius: 4,
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    min: 0,
+                    max: 100
+                }
+            }
+        }
+    });
+}
+
+// Populate analytics hospital filter
+function populateAnalyticsHospitalFilter() {
+    const filter = document.getElementById('analyticsHospitalFilter');
+    if (filter.options.length > 1) return; // already populated
+    
+    const hospitals = [...new Set(projects.map(p => p.hospitalNameForm))];
+    hospitals.forEach(hospital => {
+        const option = document.createElement('option');
+        option.value = hospital;
+        option.textContent = hospital;
+        filter.appendChild(option);
+    });
+}
+
+// Export to Excel Function - Fixed Version
+async function exportToExcel() {
+    try {
+        showLoading(true);
+        
+        if (GAS_WEB_APP_URL && GAS_WEB_APP_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_URL') {
+            const response = await fetch(GAS_WEB_APP_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `action=exportProjectsToCSV&data=${encodeURIComponent(JSON.stringify({
+                    userType: currentUser.type,
+                    hospitalName: currentUser.name
+                }))}`
+            });
+
+            // Check if response is ok
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            
+            if (result.success && result.csv) {
+                // Create and download CSV file
+                const blob = new Blob([result.csv], { 
+                    type: 'text/csv;charset=utf-8;' 
+                });
+                
+                // Create download link
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = currentUser.type === 'admin' ? 
+                    'All_Hospital_Projects.csv' : 
+                    `${currentUser.name.replace(/[^a-zA-Z0-9]/g, '_')}_Projects.csv`;
+                
+                // Append to body, click, and cleanup
+                document.body.appendChild(a);
+                a.click();
+                
+                // Cleanup
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                }, 100);
+                
+                console.log('CSV export successful');
+            } else {
+                throw new Error(result.error || 'Export failed - no data received');
+            }
+        } else {
+            console.log('Using local export fallback');
+            // Local export using XLSX library
+            exportToExcelLocal();
+        }
+    } catch (error) {
+        console.error('Export error:', error);
+        alert(`Export successful: ${error.message}`);
+        
+        // Fall back to local export
+        try {
+            exportToExcelLocal();
+        } catch (localError) {
+            console.error('Local export also failed:', localError);
+            alert('Both remote and local export failed. Please check console for details.');
+        }
+    } finally {
+        showLoading(false);
+    }
+}
+
+// Alternative: Direct Excel export using XLSX library
+function exportToExcelLocal() {
+    try {
+        // Make sure XLSX library is loaded
+        if (typeof XLSX === 'undefined') {
+            throw new Error('XLSX library not loaded. Please include SheetJS library.');
+        }
+
+        // Get your data (replace this with your actual data source)
+        let data = [];
+        
+        // Example: If you have projects data
+        if (typeof projects !== 'undefined' && Array.isArray(projects)) {
+            data = projects.map(project => {
+                const totalBills = calculateTotalBills(project);
+                const financialProgress = calculateFinancialProgress(project);
+                    
+                return {
+                    'Hospital Name': project.hospitalNameForm,
+                    'Vote': project.vote,
+                    'Job Description': project.jobDescription,
+                    'Allocation Amount': project.allocationAmount,
+                    'Estimate Amount': project.estimateAmount,
+                    'Awarding Amount': project.awardingAmount,
+                    'Physical Progress': project.physicalProgress + '%',
+                    'Financial Progress': financialProgress.toFixed(1) + '%',
+                    'Advance Amount': project.advanceAmount || 0,
+                    '1st Bill': project.bill1 || 0,
+                    '2nd Bill': project.bill2 || 0,
+                    '3rd Bill': project.bill3 || 0,
+                    '4th Bill': project.bill4 || 0,
+                    '5th Bill': project.bill5 || 0,
+                    'Total Bills Paid': totalBills,
+                    'Remark': project.remark || ''
+                };
+            });
+        } else if (typeof currentUser !== 'undefined' && currentUser.projects) {
+            data = currentUser.projects;
+        } else {
+            throw new Error('No data found to export');
+        }
+
+        if (data.length === 0) {
+            alert('No data available to export');
+            return;
+        }
+
+        // Create workbook and worksheet
+        const workbook = XLSX.utils.book_new();
+        const worksheet = XLSX.utils.json_to_sheet(data);
+
+        // Add worksheet to workbook
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Projects');
+
+        // Generate filename
+        const filename = currentUser?.type === 'admin' ? 
+            'All_Hospital_Projects.xlsx' : 
+            `${(currentUser?.name || 'Projects').replace(/[^a-zA-Z0-9]/g, '_')}_Projects.xlsx`;
+
+        // Write and download file
+        XLSX.writeFile(workbook, filename);
+        
+        console.log('Local Excel export successful');
+    } catch (error) {
+        console.error('Local export error:', error);
+        throw error;
+    }
+}
+
+// Load Vote Dashboard - FIXED
+function loadVoteDashboard() {
+    if (!currentUser || currentUser.type !== 'admin') return;
+    
+    const voteFilter = document.getElementById('voteFilter').value;
+    
+    // Aggregate data by vote
+    let voteData = {};
+    projects.forEach(project => {
+        // If vote filter is set and doesn't match, skip
+        if (voteFilter && project.vote !== voteFilter) return;
+        
+        const totalBills = calculateTotalBills(project);
+        const financialProgress = calculateFinancialProgress(project);
+            
+        if (!voteData[project.vote]) {
+            voteData[project.vote] = {
+                vote: project.vote,
+                projects: 0,
+                allocation: 0,
+                awarded: 0,
+                bills: 0,
+                progress: 0,
+                financialProgress: 0,
+                progressTotal: 0,
+                financialProgressTotal: 0,
+                weight: 0
+            };
+        }
+        
+        let vote = voteData[project.vote];
+        vote.projects++;
+        vote.allocation += project.allocationAmount;
+        vote.awarded += project.awardingAmount;
+        vote.bills += totalBills;
+        // For progress: we'll do a weighted average by allocation
+        vote.progressTotal += project.physicalProgress * project.allocationAmount;
+        vote.financialProgressTotal += financialProgress * project.awardingAmount;
+        vote.weight += project.allocationAmount;
+        vote.financialWeight += project.awardingAmount;
+    });
+    
+    // Calculate weighted progress
+    Object.keys(voteData).forEach(voteKey => {
+        let vote = voteData[voteKey];
+        vote.progress = vote.weight > 0 ? (vote.progressTotal / vote.weight) : 0;
+        vote.financialProgress = vote.financialWeight > 0 ? (vote.financialProgressTotal / vote.financialWeight) : 0;
+    });
+    
+    // Convert to array for display
+    const voteSummary = Object.values(voteData);
+    
+    // Populate vote table
+    const voteTableBody = document.querySelector('#voteTable tbody');
+    voteTableBody.innerHTML = '';
+    
+    voteSummary.forEach(vote => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td style="font-size: 0.8rem;">${vote.vote}</td>
+            <td>${vote.projects}</td>
+            <td>Rs. ${vote.allocation.toLocaleString()}</td>
+            <td>Rs. ${vote.awarded.toLocaleString()}</td>
+            <td>Rs. ${vote.bills.toLocaleString()}</td>
+            <td>${vote.progress.toFixed(1)}%</td>
+            <td>${vote.financialProgress.toFixed(1)}%</td>
+        `;
+        voteTableBody.appendChild(row);
+    });
+    
+    // Populate vote stats
+    const voteStatsContainer = document.getElementById('voteStats');
+    voteStatsContainer.innerHTML = '';
+    
+    const totalVotes = voteSummary.length;
+    const totalAllocation = voteSummary.reduce((sum, v) => sum + v.allocation, 0);
+    const totalAwarded = voteSummary.reduce((sum, v) => sum + v.awarded, 0);
+    const totalBills = voteSummary.reduce((sum, v) => sum + v.bills, 0);
+    
+    // Calculate weighted averages
+    const totalWeightedPhysicalProgress = voteSummary.reduce((sum, v) => sum + (v.progress * v.weight), 0);
+    const totalWeightedFinancialProgress = voteSummary.reduce((sum, v) => sum + (v.financialProgress * v.financialWeight), 0);
+    const totalPhysicalWeight = voteSummary.reduce((sum, v) => sum + v.weight, 0);
+    const totalFinancialWeight = voteSummary.reduce((sum, v) => sum + v.financialWeight, 0);
+    
+    const avgProgress = totalPhysicalWeight > 0 ? totalWeightedPhysicalProgress / totalPhysicalWeight : 0;
+    const avgFinancialProgress = totalFinancialWeight > 0 ? totalWeightedFinancialProgress / totalFinancialWeight : 0;
+    
+    voteStatsContainer.innerHTML = `
+        <div class="vote-stat">
+            <h4>Total Votes</h4>
+            <div class="value">${totalVotes}</div>
+        </div>
+        <div class="vote-stat">
+            <h4>Total Allocation</h4>
+            <div class="value">Rs. ${(totalAllocation/1000000).toFixed(1)}M</div>
+        </div>
+        <div class="vote-stat">
+            <h4>Total Awarded</h4>
+            <div class="value">Rs. ${(totalAwarded/1000000).toFixed(1)}M</div>
+        </div>
+        <div class="vote-stat">
+            <h4>Total Bills Paid</h4>
+            <div class="value">Rs. ${(totalBills/1000000).toFixed(1)}M</div>
+        </div>
+        <div class="vote-stat">
+            <h4>Avg Physical Progress</h4>
+            <div class="value">${avgProgress.toFixed(1)}%</div>
+        </div>
+        <div class="vote-stat">
+            <h4>Avg Financial Progress</h4>
+            <div class="value">${avgFinancialProgress.toFixed(1)}%</div>
+        </div>
+    `;
+    
+    // Update vote filter dropdown
+    populateVoteFilter();
+    
+    // Draw vote chart
+    if (voteChart) voteChart.destroy();
+    
+    if (voteSummary.length > 0) {
+        const ctx = document.getElementById('voteChart').getContext('2d');
+        
+        // Prepare chart data
+        const labels = voteSummary.map(v => v.vote.length > 30 ? v.vote.substring(0, 30) + '...' : v.vote);
+        const data = voteSummary.map(v => v.allocation);
+        const colors = generateChartColors(data.length);
+        
+        voteChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: data,
+                    backgroundColor: colors,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            boxWidth: 12,
+                            padding: 10,
+                            usePointStyle: true
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const fullLabel = voteSummary[context.dataIndex].vote;
+                                const value = context.parsed;
+                                return fullLabel + ': Rs. ' + value.toLocaleString();
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+}
+
+// Generate colors for chart
+function generateChartColors(count) {
+    const colors = [];
+    const baseColors = [
+        'rgba(54, 162, 235, 0.7)',
+        'rgba(255, 99, 132, 0.7)',
+        'rgba(255, 206, 86, 0.7)',
+        'rgba(75, 192, 192, 0.7)',
+        'rgba(153, 102, 255, 0.7)',
+        'rgba(255, 159, 64, 0.7)',
+        'rgba(199, 199, 199, 0.7)',
+        'rgba(83, 102, 255, 0.7)',
+        'rgba(40, 159, 64, 0.7)',
+        'rgba(210, 99, 132, 0.7)'
+    ];
+    
+    for (let i = 0; i < count; i++) {
+        colors.push(baseColors[i % baseColors.length]);
+    }
+    
+    return colors;
+}
+
+// Populate vote filter dropdown
+function populateVoteFilter() {
+    const filter = document.getElementById('voteFilter');
+    if (filter.options.length > 1) return; // already populated
+    
+    const votes = [...new Set(projects.map(p => p.vote))];
+    votes.forEach(vote => {
+        const option = document.createElement('option');
+        option.value = vote;
+        option.textContent = vote;
+        filter.appendChild(option);
+    });
+}
+
+// Export Vote Summary to Excel
+function exportVoteSummaryToExcel() {
+    try {
+        showLoading(true);
+        
+        // Aggregate data by vote
+        let voteData = {};
+        projects.forEach(project => {
+            const totalBills = calculateTotalBills(project);
+            const financialProgress = calculateFinancialProgress(project);
+                
+            if (!voteData[project.vote]) {
+                voteData[project.vote] = {
+                    vote: project.vote,
+                    projects: 0,
+                    allocation: 0,
+                    awarded: 0,
+                    bills: 0,
+                    progress: 0,
+                    financialProgress: 0,
+                    progressTotal: 0,
+                    financialProgressTotal: 0,
+                    weight: 0,
+                    financialWeight: 0
+                };
+            }
+            
+            let vote = voteData[project.vote];
+            vote.projects++;
+            vote.allocation += project.allocationAmount;
+            vote.awarded += project.awardingAmount;
+            vote.bills += totalBills;
+            vote.progressTotal += project.physicalProgress * project.allocationAmount;
+            vote.financialProgressTotal += financialProgress * project.awardingAmount;
+            vote.weight += project.allocationAmount;
+            vote.financialWeight += project.awardingAmount;
+        });
+        
+        // Calculate weighted progress
+        Object.keys(voteData).forEach(voteKey => {
+            let vote = voteData[voteKey];
+            vote.progress = vote.weight > 0 ? (vote.progressTotal / vote.weight) : 0;
+            vote.financialProgress = vote.financialWeight > 0 ? (vote.financialProgressTotal / vote.financialWeight) : 0;
+        });
+        
+        // Convert to array for export
+        const voteSummary = Object.values(voteData);
+        
+        // Prepare data for export
+        const exportData = voteSummary.map(vote => ({
+            'Vote Number': vote.vote,
+            'Number of Projects': vote.projects,
+            'Total Allocation (Rs.)': vote.allocation,
+            'Total Awarded (Rs.)': vote.awarded,
+            'Total Bills Paid (Rs.)': vote.bills,
+            'Weighted Physical Progress (%)': vote.progress.toFixed(1),
+            'Weighted Financial Progress (%)': vote.financialProgress.toFixed(1)
+        }));
+
+        // Create workbook and worksheet
+        const workbook = XLSX.utils.book_new();
+        const worksheet = XLSX.utils.json_to_sheet(exportData);
+
+        // Add worksheet to workbook
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Vote Summary');
+
+        // Generate filename and download
+        const filename = `Vote_Summary_${new Date().toISOString().split('T')[0]}.xlsx`;
+        XLSX.writeFile(workbook, filename);
+        
+    } catch (error) {
+        console.error('Vote export error:', error);
+        alert('Error exporting vote summary: ' + error.message);
+    } finally {
+        showLoading(false);
+    }
+}
+
+// Load Reports Section
+function loadReportsSection() {
+    if (!currentUser || currentUser.type !== 'admin') return;
+    
+    // Populate hospital filter
+    const hospitalFilter = document.getElementById('reportHospitalFilter');
+    hospitalFilter.innerHTML = '';
+    hospitals.forEach(hospital => {
+        const option = document.createElement('option');
+        option.value = hospital;
+        option.textContent = hospital;
+        hospitalFilter.appendChild(option);
+    });
+    
+    // Populate vote filter
+    const voteFilter = document.getElementById('reportVoteFilter');
+    voteFilter.innerHTML = '';
+    const votes = [...new Set(projects.map(p => p.vote))];
+    votes.forEach(vote => {
+        const option = document.createElement('option');
+        option.value = vote;
+        option.textContent = vote;
+        voteFilter.appendChild(option);
+    });
+    
+    // Populate detailed hospital report dropdown
+    populateDetailedHospitalReport();
+    
+    // Set up report type selection
+    document.querySelectorAll('.report-type-option').forEach(option => {
+        option.addEventListener('click', function() {
+            document.querySelectorAll('.report-type-option').forEach(opt => {
+                opt.classList.remove('active');
+            });
+            this.classList.add('active');
+        });
+    });
+}
+
+// Report filter helper functions
+function selectAllHospitals() {
+    const hospitalFilter = document.getElementById('reportHospitalFilter');
+    Array.from(hospitalFilter.options).forEach(option => {
+        option.selected = true;
+    });
+}
+
+function deselectAllHospitals() {
+    const hospitalFilter = document.getElementById('reportHospitalFilter');
+    Array.from(hospitalFilter.options).forEach(option => {
+        option.selected = false;
+    });
+}
+
+function selectAllVotes() {
+    const voteFilter = document.getElementById('reportVoteFilter');
+    Array.from(voteFilter.options).forEach(option => {
+        option.selected = true;
+    });
+}
+
+function deselectAllVotes() {
+    const voteFilter = document.getElementById('reportVoteFilter');
+    Array.from(voteFilter.options).forEach(option => {
+        option.selected = false;
+    });
+}
+
+function selectAllProgress() {
+    const progressFilter = document.getElementById('reportProgressFilter');
+    Array.from(progressFilter.options).forEach(option => {
+        option.selected = true;
+    });
+}
+
+function deselectAllProgress() {
+    const progressFilter = document.getElementById('reportProgressFilter');
+    Array.from(progressFilter.options).forEach(option => {
+        option.selected = false;
+    });
+}
+
+function resetReportFilters() {
+    deselectAllHospitals();
+    deselectAllVotes();
+    deselectAllProgress();
+    document.getElementById('reportStartDate').value = '';
+    document.getElementById('reportEndDate').value = '';
+}
+
+// Generate Report Function
+function generateReport() {
+    try {
+        showLoading(true);
+        
+        // Get selected report type
+        const reportType = document.querySelector('.report-type-option.active').dataset.type;
+        
+        // Get filter values
+        const selectedHospitals = Array.from(document.getElementById('reportHospitalFilter').selectedOptions)
+            .map(option => option.value);
+        const selectedVotes = Array.from(document.getElementById('reportVoteFilter').selectedOptions)
+            .map(option => option.value);
+        const selectedProgress = Array.from(document.getElementById('reportProgressFilter').selectedOptions)
+            .map(option => option.value);
+        const startDate = document.getElementById('reportStartDate').value;
+        const endDate = document.getElementById('reportEndDate').value;
+        
+        // Filter projects based on criteria
+        let filteredProjects = projects.filter(project => {
+            // Hospital filter
+            if (selectedHospitals.length > 0 && !selectedHospitals.includes(project.hospitalNameForm)) {
+                return false;
+            }
+            
+            // Vote filter
+            if (selectedVotes.length > 0 && !selectedVotes.includes(project.vote)) {
+                return false;
+            }
+            
+            // Progress filter
+            if (selectedProgress.length > 0) {
+                let matchesProgress = false;
+                selectedProgress.forEach(range => {
+                    if (range === '100') {
+                        if (project.physicalProgress === 100) matchesProgress = true;
+                    } else if (range === '0-25') {
+                        if (project.physicalProgress >= 0 && project.physicalProgress <= 25) matchesProgress = true;
+                    } else if (range === '26-50') {
+                        if (project.physicalProgress >= 26 && project.physicalProgress <= 50) matchesProgress = true;
+                    } else if (range === '51-75') {
+                        if (project.physicalProgress >= 51 && project.physicalProgress <= 75) matchesProgress = true;
+                    } else if (range === '76-99') {
+                        if (project.physicalProgress >= 76 && project.physicalProgress <= 99) matchesProgress = true;
+                    }
+                });
+                if (!matchesProgress) return false;
+            }
+            
+            // Date filter
+            if (startDate && project.createdDate < new Date(startDate)) {
+                return false;
+            }
+            if (endDate && project.createdDate > new Date(endDate)) {
+                return false;
+            }
+            
+            return true;
+        });
+        
+        // Generate report based on type
+        generateReportByType(reportType, filteredProjects);
+        
+    } catch (error) {
+        console.error('Report generation error:', error);
+        alert('Error generating report: ' + error.message);
+    } finally {
+        showLoading(false);
+    }
+}
+
+// Generate specific report types
+function generateReportByType(type, filteredProjects) {
+    // Update report title and date range
+    const reportTitles = {
+        'hospital': 'Hospital Report',
+        'vote': 'Vote Report',
+        'progress': 'Progress Report',
+        'financial': 'Financial Report'
+    };
+    
+    document.getElementById('reportTitle').textContent = reportTitles[type];
+    
+    const startDate = document.getElementById('reportStartDate').value;
+    const endDate = document.getElementById('reportEndDate').value;
+    let dateRangeText = 'All Time';
+    if (startDate || endDate) {
+        dateRangeText = `${startDate || 'Start'} to ${endDate || 'End'}`;
+    }
+    document.getElementById('reportDateRange').textContent = dateRangeText;
+    
+    // Generate summary statistics
+    generateReportSummary(filteredProjects);
+    
+    // Generate detailed results based on report type
+    switch(type) {
+        case 'hospital':
+            generateHospitalReport(filteredProjects);
+            break;
+        case 'vote':
+            generateVoteReport(filteredProjects);
+            break;
+        case 'progress':
+            generateProgressReport(filteredProjects);
+            break;
+        case 'financial':
+            generateFinancialReport(filteredProjects);
+            break;
+    }
+}
+
+// Generate report summary - FIXED with proper progress calculations
+function generateReportSummary(filteredProjects) {
+    const totalProjects = filteredProjects.length;
+    const completedProjects = filteredProjects.filter(p => p.physicalProgress === 100).length;
+    const totalAllocation = filteredProjects.reduce((sum, p) => sum + p.allocationAmount, 0);
+    const totalAwarded = filteredProjects.reduce((sum, p) => sum + p.awardingAmount, 0);
+    const totalBills = filteredProjects.reduce((sum, p) => {
+        return sum + calculateTotalBills(p);
+    }, 0);
+    
+    // Calculate average physical progress (simple average)
+    const avgPhysicalProgress = calculateAveragePhysicalProgress(filteredProjects);
+    
+    // Calculate average financial progress (weighted by awarding amount)
+    const avgFinancialProgress = calculateAverageFinancialProgress(filteredProjects);
+
+    document.getElementById('reportSummary').innerHTML = `
+        <div class="report-summary-card">
+            <h4>Total Projects</h4>
+            <div class="value">${totalProjects}</div>
+        </div>
+        <div class="report-summary-card">
+            <h4>Completed</h4>
+            <div class="value">${completedProjects}</div>
+        </div>
+        <div class="report-summary-card">
+            <h4>Total Allocation</h4>
+            <div class="value">Rs. ${(totalAllocation/1000000).toFixed(1)}M</div>
+        </div>
+        <div class="report-summary-card">
+            <h4>Total Awarded</h4>
+            <div class="value">Rs. ${(totalAwarded/1000000).toFixed(1)}M</div>
+        </div>
+        <div class="report-summary-card">
+            <h4>Total Payments</h4>
+            <div class="value">Rs. ${(totalBills/1000000).toFixed(1)}M</div>
+        </div>
+        <div class="report-summary-card">
+            <h4>Avg Physical Progress</h4>
+            <div class="value">${avgPhysicalProgress.toFixed(1)}%</div>
+        </div>
+        <div class="report-summary-card">
+            <h4>Avg Financial Progress</h4>
+            <div class="value">${avgFinancialProgress.toFixed(1)}%</div>
+        </div>
+    `;
+}
+
+// Generate Hospital Report - FIXED with financial progress
+function generateHospitalReport(projects) {
+    // Group by hospital
+    const hospitalData = {};
+    projects.forEach(project => {
+        const totalBills = calculateTotalBills(project);
+        const financialProgress = calculateFinancialProgress(project);
+            
+        if (!hospitalData[project.hospitalNameForm]) {
+            hospitalData[project.hospitalNameForm] = {
+                hospital: project.hospitalNameForm,
+                projects: 0,
+                allocation: 0,
+                awarded: 0,
+                bills: 0,
+                progress: 0,
+                financialProgress: 0,
+                progressTotal: 0,
+                financialProgressTotal: 0,
+                weight: 0,
+                financialWeight: 0
+            };
+        }
+        
+        let hospital = hospitalData[project.hospitalNameForm];
+        hospital.projects++;
+        hospital.allocation += project.allocationAmount;
+        hospital.awarded += project.awardingAmount;
+        hospital.bills += totalBills;
+        // For progress: we'll do a weighted average by allocation
+        hospital.progressTotal += project.physicalProgress * project.allocationAmount;
+        hospital.financialProgressTotal += financialProgress * project.awardingAmount;
+        hospital.weight += project.allocationAmount;
+        hospital.financialWeight += project.awardingAmount;
+    });
+    
+    // Calculate weighted progress
+    Object.keys(hospitalData).forEach(hospitalKey => {
+        let hospital = hospitalData[hospitalKey];
+        hospital.progress = hospital.weight > 0 ? (hospital.progressTotal / hospital.weight) : 0;
+        hospital.financialProgress = hospital.financialWeight > 0 ? (hospital.financialProgressTotal / hospital.financialWeight) : 0;
+    });
+    
+    const hospitalSummary = Object.values(hospitalData);
+    
+    // Create table
+    let tableHTML = `
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr>
+                    <th>Hospital Name</th>
+                    <th>Projects</th>
+                    <th>Allocation (Rs.)</th>
+                    <th>Awarded (Rs.)</th>
+                    <th>Bills Paid (Rs.)</th>
+                    <th>Physical Progress (%)</th>
+                    <th>Financial Progress (%)</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+    
+    hospitalSummary.forEach(hospital => {
+        tableHTML += `
+            <tr>
+                <td>${hospital.hospital}</td>
+                <td>${hospital.projects}</td>
+                <td>${hospital.allocation.toLocaleString()}</td>
+                <td>${hospital.awarded.toLocaleString()}</td>
+                <td>${hospital.bills.toLocaleString()}</td>
+                <td>${hospital.progress.toFixed(1)}</td>
+                <td>${hospital.financialProgress.toFixed(1)}</td>
+            </tr>
+        `;
+    });
+    
+    tableHTML += `</tbody></table>`;
+    document.getElementById('reportResults').innerHTML = tableHTML;
+}
+
+// Generate Vote Report - FIXED with financial progress
+function generateVoteReport(projects) {
+    // Group by vote
+    const voteData = {};
+    projects.forEach(project => {
+        const totalBills = calculateTotalBills(project);
+        const financialProgress = calculateFinancialProgress(project);
+            
+        if (!voteData[project.vote]) {
+            voteData[project.vote] = {
+                vote: project.vote,
+                projects: 0,
+                allocation: 0,
+                awarded: 0,
+                bills: 0,
+                progress: 0,
+                financialProgress: 0,
+                progressTotal: 0,
+                financialProgressTotal: 0,
+                weight: 0,
+                financialWeight: 0
+            };
+        }
+        
+        let vote = voteData[project.vote];
+        vote.projects++;
+        vote.allocation += project.allocationAmount;
+        vote.awarded += project.awardingAmount;
+        vote.bills += totalBills;
+        vote.progressTotal += project.physicalProgress * project.allocationAmount;
+        vote.financialProgressTotal += financialProgress * project.awardingAmount;
+        vote.weight += project.allocationAmount;
+        vote.financialWeight += project.awardingAmount;
+    });
+    
+    // Calculate weighted progress
+    Object.keys(voteData).forEach(voteKey => {
+        let vote = voteData[voteKey];
+        vote.progress = vote.weight > 0 ? (vote.progressTotal / vote.weight) : 0;
+        vote.financialProgress = vote.financialWeight > 0 ? (vote.financialProgressTotal / vote.financialWeight) : 0;
+    });
+    
+    const voteSummary = Object.values(voteData);
+    
+    // Create table
+    let tableHTML = `
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr>
+                    <th>Vote Number</th>
+                    <th>Projects</th>
+                    <th>Allocation (Rs.)</th>
+                    <th>Awarded (Rs.)</th>
+                    <th>Bills Paid (Rs.)</th>
+                    <th>Physical Progress (%)</th>
+                    <th>Financial Progress (%)</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+    
+    voteSummary.forEach(vote => {
+        tableHTML += `
+            <tr>
+                <td style="font-size: 0.8rem;">${vote.vote}</td>
+                <td>${vote.projects}</td>
+                <td>${vote.allocation.toLocaleString()}</td>
+                <td>${vote.awarded.toLocaleString()}</td>
+                <td>${vote.bills.toLocaleString()}</td>
+                <td>${vote.progress.toFixed(1)}</td>
+                <td>${vote.financialProgress.toFixed(1)}</td>
+            </tr>
+        `;
+    });
+    
+    tableHTML += `</tbody></table>`;
+    document.getElementById('reportResults').innerHTML = tableHTML;
+}
+
+// Generate Progress Report
+function generateProgressReport(projects) {
+    // Group by progress ranges
+    const progressRanges = [
+        { label: '0-25%', min: 0, max: 25 },
+        { label: '26-50%', min: 26, max: 50 },
+        { label: '51-75%', min: 51, max: 75 },
+        { label: '76-99%', min: 76, max: 99 },
+        { label: '100% (Completed)', min: 100, max: 100 }
+    ];
+    
+    const progressData = progressRanges.map(range => {
+        const rangeProjects = projects.filter(p => 
+            p.physicalProgress >= range.min && p.physicalProgress <= range.max
+        );
+        
+        const allocation = rangeProjects.reduce((sum, p) => sum + p.allocationAmount, 0);
+        const awarded = rangeProjects.reduce((sum, p) => sum + p.awardingAmount, 0);
+        const bills = rangeProjects.reduce((sum, p) => sum + calculateTotalBills(p), 0);
+        
+        // Calculate average financial progress for this range (weighted)
+        let totalWeightedFinancialProgress = 0;
+        let totalWeight = 0;
+        
+        rangeProjects.forEach(project => {
+            const financialProgress = calculateFinancialProgress(project);
+            totalWeightedFinancialProgress += financialProgress * project.awardingAmount;
+            totalWeight += project.awardingAmount;
+        });
+        
+        const avgFinancialProgress = totalWeight > 0 ? totalWeightedFinancialProgress / totalWeight : 0;
+        
+        return {
+            range: range.label,
+            projects: rangeProjects.length,
+            allocation: allocation,
+            awarded: awarded,
+            bills: bills,
+            avgFinancialProgress: avgFinancialProgress
+        };
+    });
+    
+    // Create table
+    let tableHTML = `
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr>
+                    <th>Progress Range</th>
+                    <th>Projects</th>
+                    <th>Allocation (Rs.)</th>
+                    <th>Awarded (Rs.)</th>
+                    <th>Bills Paid (Rs.)</th>
+                    <th>Avg Financial Progress (%)</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+    
+    progressData.forEach(data => {
+        tableHTML += `
+            <tr>
+                <td>${data.range}</td>
+                <td>${data.projects}</td>
+                <td>${data.allocation.toLocaleString()}</td>
+                <td>${data.awarded.toLocaleString()}</td>
+                <td>${data.bills.toLocaleString()}</td>
+                <td>${data.avgFinancialProgress.toFixed(1)}</td>
+            </tr>
+        `;
+    });
+    
+    tableHTML += `</tbody></table>`;
+    document.getElementById('reportResults').innerHTML = tableHTML;
+}
+
+// Generate Financial Report - FIXED with financial progress
+function generateFinancialReport(projects) {
+    // Create detailed financial table
+    let tableHTML = `
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr>
+                    <th>Hospital</th>
+                    <th>Vote</th>
+                    <th>Job Description</th>
+                    <th>Allocation (Rs.)</th>
+                    <th>Estimate (Rs.)</th>
+                    <th>Awarded (Rs.)</th>
+                    <th>Advance (Rs.)</th>
+                    <th>Bills Paid (Rs.)</th>
+                    <th>Balance (Rs.)</th>
+                    <th>Physical Progress</th>
+                    <th>Financial Progress</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+    
+    projects.forEach(project => {
+        const totalBills = calculateTotalBills(project);
+        const balance = project.awardingAmount - totalBills;
+        const financialProgress = calculateFinancialProgress(project);
+        
+        tableHTML += `
+            <tr>
+                <td>${project.hospitalNameForm}</td>
+                <td style="font-size: 0.8rem;">${project.vote}</td>
+                <td>${project.jobDescription}</td>
+                <td>${project.allocationAmount.toLocaleString()}</td>
+                <td>${project.estimateAmount.toLocaleString()}</td>
+                <td>${project.awardingAmount.toLocaleString()}</td>
+                <td>${(project.advanceAmount || 0).toLocaleString()}</td>
+                <td>${totalBills.toLocaleString()}</td>
+                <td style="color: ${balance < 0 ? 'red' : 'green'}">${balance.toLocaleString()}</td>
+                <td>${project.physicalProgress}%</td>
+                <td>${financialProgress.toFixed(1)}%</td>
+            </tr>
+        `;
+    });
+    
+    tableHTML += `</tbody></table>`;
+    document.getElementById('reportResults').innerHTML = tableHTML;
+}
+
+// Export Report to Excel - FIXED
+function exportReportToExcel() {
+    try {
+        showLoading(true);
+        
+        // Get the current report results
+        const reportTitle = document.getElementById('reportTitle').textContent;
+        const reportTable = document.getElementById('reportResults').querySelector('table');
+        
+        if (!reportTable) {
+            alert('No report data to export');
+            return;
+        }
+        
+        // Convert table to worksheet
+        const workbook = XLSX.utils.book_new();
+        const worksheet = XLSX.utils.table_to_sheet(reportTable);
+        
+        // FIX: Truncate sheet name to 31 characters and remove invalid characters
+        let sheetName = reportTitle
+            .replace(/[^a-zA-Z0-9\s]/g, '') // Remove special characters
+            .substring(0, 31) // Truncate to 31 characters
+            .trim(); // Remove any trailing spaces
+        
+        // If sheet name is empty after cleaning, use a default name
+        if (!sheetName) {
+            sheetName = 'Report';
+        }
+        
+        // Add worksheet to workbook
+        XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
+        
+        // Generate filename and download
+        const filename = `${reportTitle.replace(/[^a-zA-Z0-9]/g, '_')}_${new Date().toISOString().split('T')[0]}.xlsx`;
+        XLSX.writeFile(workbook, filename);
+        
+    } catch (error) {
+        console.error('Report export error:', error);
+        alert('Error exporting report: ' + error.message);
+    } finally {
+        showLoading(false);
+    }
+}
+
+// Add this function to generate detailed hospital reports
+function generateDetailedHospitalReport() {
+    try {
+        showLoading(true);
+        
+        const selectedHospital = document.getElementById('detailedHospitalReport').value;
+        if (!selectedHospital) {
+            alert('Please select a hospital for the detailed report');
+            return;
+        }
+        
+        // Filter projects for the selected hospital
+        const hospitalProjects = projects.filter(project => 
+            project.hospitalNameForm === selectedHospital
+        );
+        
+        if (hospitalProjects.length === 0) {
+            alert('No projects found for the selected hospital');
+            return;
+        }
+        
+        // Update report display
+        document.getElementById('reportTitle').textContent = `Detailed Report - ${selectedHospital}`;
+        document.getElementById('reportDateRange').textContent = 'All Projects';
+        
+        // Generate comprehensive summary
+        generateDetailedHospitalSummary(hospitalProjects, selectedHospital);
+        
+        // Generate detailed project list
+        generateDetailedProjectTable(hospitalProjects);
+        
+    } catch (error) {
+        console.error('Detailed hospital report error:', error);
+        alert('Error generating detailed report: ' + error.message);
+    } finally {
+        showLoading(false);
+    }
+}
+
+// Generate detailed hospital summary
+function generateDetailedHospitalSummary(projects, hospitalName) {
+    const totalProjects = projects.length;
+    const completedProjects = projects.filter(p => p.physicalProgress === 100).length;
+    const ongoingProjects = totalProjects - completedProjects;
+    
+    const totalAllocation = projects.reduce((sum, p) => sum + p.allocationAmount, 0);
+    const totalAwarded = projects.reduce((sum, p) => sum + p.awardingAmount, 0);
+    const totalBills = projects.reduce((sum, p) => sum + calculateTotalBills(p), 0);
+    
+    const totalAdvance = projects.reduce((sum, p) => sum + (p.advanceAmount || 0), 0);
+    
+    // Calculate average physical progress (simple average)
+    const avgPhysicalProgress = calculateAveragePhysicalProgress(projects);
+    
+    // Calculate average financial progress (weighted by awarding amount)
+    const avgFinancialProgress = calculateAverageFinancialProgress(projects);
+    
+    // Calculate progress distribution
+    const progressRanges = [
+        { label: '0-25%', min: 0, max: 25, count: 0 },
+        { label: '26-50%', min: 26, max: 50, count: 0 },
+        { label: '51-75%', min: 51, max: 75, count: 0 },
+        { label: '76-99%', min: 76, max: 99, count: 0 },
+        { label: '100%', min: 100, max: 100, count: 0 }
+    ];
+    
+    projects.forEach(project => {
+        progressRanges.forEach(range => {
+            if (project.physicalProgress >= range.min && project.physicalProgress <= range.max) {
+                range.count++;
+            }
+        });
+    });
+    
+    document.getElementById('reportSummary').innerHTML = `
+        <div class="hospital-summary">
+            <h3><i class="fas fa-hospital"></i> ${hospitalName} - Comprehensive Overview</h3>
+            <div class="summary-stats">
+                <div>Total Projects: <span>${totalProjects}</span></div>
+                <div>Completed: <span>${completedProjects}</span></div>
+                <div>Ongoing: <span>${ongoingProjects}</span></div>
+                <div>Total Allocation: <span>Rs. ${totalAllocation.toLocaleString()}</span></div>
+                <div>Total Awarded: <span>Rs. ${totalAwarded.toLocaleString()}</span></div>
+                <div>Total Payments: <span>Rs. ${totalBills.toLocaleString()}</span></div>
+                <div>Total Advance: <span>Rs. ${totalAdvance.toLocaleString()}</span></div>
+                <div>Avg Physical Progress: <span>${avgPhysicalProgress.toFixed(1)}%</span></div>
+                <div>Avg Financial Progress: <span>${avgFinancialProgress.toFixed(1)}%</span></div>
+            </div>
+            
+            <div style="margin-top: 20px;">
+                <h4><i class="fas fa-chart-pie"></i> Progress Distribution</h4>
+                <div class="summary-stats">
+                    ${progressRanges.map(range => `
+                        <div>${range.label}: <span>${range.count} projects</span></div>
+                    `).join('')}
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// Generate detailed project table - FIXED with financial progress
+function generateDetailedProjectTable(projects) {
+    let tableHTML = `
+        <div style="margin-top: 30px;">
+            <h4><i class="fas fa-table"></i> Project Details</h4>
+            <div class="table-container">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th>Vote Number</th>
+                            <th>Job Description</th>
+                            <th>Allocation (Rs.)</th>
+                            <th>Estimate (Rs.)</th>
+                            <th>Awarded (Rs.)</th>
+                            <th>Physical Progress</th>
+                            <th>Financial Progress</th>
+                            <th>Advance (Rs.)</th>
+                            <th>Bills Paid (Rs.)</th>
+                            <th>Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+    `;
+    
+    projects.forEach(project => {
+        const totalBills = calculateTotalBills(project);
+        const financialProgress = calculateFinancialProgress(project);
+        
+        tableHTML += `
+            <tr>
+                <td style="font-size: 0.8rem;">${project.vote}</td>
+                <td>${project.jobDescription}</td>
+                <td>${project.allocationAmount.toLocaleString()}</td>
+                <td>${project.estimateAmount.toLocaleString()}</td>
+                <td>${project.awardingAmount.toLocaleString()}</td>
+                <td>${project.physicalProgress}%</td>
+                <td>${financialProgress.toFixed(1)}%</td>
+                <td>${(project.advanceAmount || 0).toLocaleString()}</td>
+                <td>${totalBills.toLocaleString()}</td>
+                <td>${project.remark || '-'}</td>
+            </tr>
+        `;
+    });
+    
+    tableHTML += `
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById('reportResults').innerHTML = tableHTML;
+}
+
+// Populate detailed hospital report dropdown
+function populateDetailedHospitalReport() {
+    const dropdown = document.getElementById('detailedHospitalReport');
+    if (dropdown.options.length > 1) return;
+    
+    dropdown.innerHTML = '<option value="">-- Select Hospital for Detailed Report --</option>';
+    
+    const hospitalList = [...new Set(projects.map(p => p.hospitalNameForm))];
+    hospitalList.forEach(hospital => {
+        const option = document.createElement('option');
+        option.value = hospital;
+        option.textContent = hospital;
+        dropdown.appendChild(option);
+    });
+}
+
+// Form validation - FIXED to allow zero amounts and properly validate physical progress
+function validateForm(formData) {
+    // Check required fields only
+    if (!formData.hospitalNameForm) {
+        alert('Please select a hospital');
+        return false;
+    }
+    if (!formData.vote) {
+        alert('Please select a vote number');
+        return false;
+    }
+    if (!formData.jobDescription) {
+        alert('Please enter job description');
+        return false;
+    }
+    
+    // Optional fields validation - only validate if provided and allow zero
+    if (formData.allocationAmount < 0) {
+        alert('Allocation amount cannot be negative');
+        return false;
+    }
+    if (formData.estimateAmount < 0) {
+        alert('Estimate amount cannot be negative');
+        return false;
+    }
+    if (formData.awardingAmount < 0) {
+        alert('Awarding amount cannot be negative');
+        return false;
+    }
+    
+    // Physical progress validation - FIXED: Always validate since it's now always a number
+    if (formData.physicalProgress < 0 || formData.physicalProgress > 100) {
+        alert('Physical progress must be between 0 and 100');
+        return false;
+    }
+    
+    // Validate financial consistency only if all relevant amounts are provided
+    if (formData.awardingAmount > formData.allocationAmount) {
+        alert('Awarding amount cannot exceed allocation amount');
+        return false;
+    }
+    
+    // Validate optional bill amounts - allow zero but not negative
+    if (formData.advanceAmount < 0) {
+        alert('Advance amount cannot be negative');
+        return false;
+    }
+    if (formData.bill1 < 0) {
+        alert('1st Bill amount cannot be negative');
+        return false;
+    }
+    if (formData.bill2 < 0) {
+        alert('2nd Bill amount cannot be negative');
+        return false;
+    }
+    if (formData.bill3 < 0) {
+        alert('3rd Bill amount cannot be negative');
+        return false;
+    }
+    if (formData.bill4 < 0) {
+        alert('4th Bill amount cannot be negative');
+        return false;
+    }
+    if (formData.bill5 < 0) {
+        alert('5th Bill amount cannot be negative');
+        return false;
+    }
+    
+    return true;
+}
+
+// Utility Functions
+function showLoading(show) {
+    document.getElementById('loadingIndicator').style.display = show ? 'flex' : 'none';
+}
+
+function logout() {
+    currentUser = null;
+    projects = [];
+    document.getElementById('mainApp').classList.add('hidden');
+    document.getElementById('loginForm').classList.remove('hidden');
+    document.getElementById('password').value = '';
+}
+
+// Event Listeners
+document.addEventListener('DOMContentLoaded', function() {
+    // Add event listeners for form submission
+    document.getElementById('projectForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        saveProject();
+    });
+    
+    // Add keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+        // Escape key to close modal
+        if (e.key === 'Escape') {
+            closeModal();
+        }
+        
+        // Ctrl+F to focus search
+        if (e.ctrlKey && e.key === 'f') {
+            e.preventDefault();
+            document.getElementById('searchInput').focus();
+        }
+    });
+    
+    // Initialize with sample data for demo
+    if (GAS_WEB_APP_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL') {
+        console.log('Running in demo mode with sample data');
+    }
+});
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById('projectModal');
+    if (event.target === modal) {
+        closeModal();
+    }
+}
+
+// Format currency display
+function formatCurrency(amount) {
+    return new Intl.NumberFormat('en-LK', {
+        style: 'currency',
+        currency: 'LKR',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+    }).format(amount);
+}
+
+// Format percentage display
+function formatPercentage(value) {
+    return new Intl.NumberFormat('en-US', {
+        style: 'percent',
+        minimumFractionDigits: 1,
+        maximumFractionDigits: 1
+    }).format(value / 100);
+}
+
+// Error handling for fetch operations
+async function handleFetchError(response) {
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.json();
+}
+
+// Debounce function for search input
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// Apply debouncing to search input
+const debouncedFilterProjects = debounce(filterProjects, 300);
+document.getElementById('searchInput').addEventListener('input', debouncedFilterProjects);
+
+// Enhanced error handling
+window.addEventListener('error', function(e) {
+    console.error('Global error:', e.error);
+    showLoading(false);
+});
+
+window.addEventListener('unhandledrejection', function(e) {
+    console.error('Unhandled promise rejection:', e.reason);
+    showLoading(false);
+});
+
+// Service Worker registration for PWA capabilities (optional)
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/sw.js')
+            .then(function(registration) {
+                console.log('SW registered: ', registration);
+            })
+            .catch(function(registrationError) {
+                console.log('SW registration failed: ', registrationError);
+            });
+    });
+}
+
+// Simple Enter key login - add this anywhere in your script
+document.getElementById('password').addEventListener('keypress', e => e.key === 'Enter' && login());
+
+// Export functions for global access
+window.login = login;
+window.logout = logout;
+window.showSection = showSection;
+window.openModal = openModal;
+window.closeModal = closeModal;
+window.saveProject = saveProject;
+window.editProject = editProject;
+window.deleteProject = deleteProject;
+window.filterProjects = filterProjects;
+window.clearSearch = clearSearch;
+window.exportToExcel = exportToExcel;
+window.loadAnalytics = loadAnalytics;
+window.loadVoteDashboard = loadVoteDashboard;
+window.exportVoteSummaryToExcel = exportVoteSummaryToExcel;
+window.generateReport = generateReport;
+window.exportReportToExcel = exportReportToExcel;
+window.selectAllHospitals = selectAllHospitals;
+window.deselectAllHospitals = deselectAllHospitals;
+window.selectAllVotes = selectAllVotes;
+window.deselectAllVotes = deselectAllVotes;
+window.selectAllProgress = selectAllProgress;
+window.deselectAllProgress = deselectAllProgress;
+window.resetReportFilters = resetReportFilters;
+window.changePage = changePage;
+window.generateDetailedHospitalReport = generateDetailedHospitalReport;
+
+console.log('Hospital Project Management System loaded successfully');
+</script>
 </body>
 </html>
+
+
+

@@ -453,6 +453,280 @@ select.form-control {
     flex: 1;
 }
 
+/* FILTERS CONTAINER */
+.filters-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    border: 1px solid var(--light-gray);
+}
+
+/* FILTER GROUP */
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    min-width: 200px;
+}
+
+.filter-group label {
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+    color: var(--dark);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* SEARCH BOX - FULL WIDTH, PROMINENT DISPLAY */
+.search-box {
+    grid-column: 1 / -1; /* Spans all columns */
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    width: 100%;
+}
+
+.search-box input {
+    flex: 1;
+    min-width: 0; /* Allows flex item to shrink below content size */
+    padding: 14px 20px;
+    border: 2px solid var(--light-gray);
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: var(--transition);
+    background-color: #fff;
+}
+
+.search-box input:focus {
+    border-color: var(--primary);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(26, 84, 144, 0.1);
+    transform: translateY(-1px);
+}
+
+.search-box input::placeholder {
+    color: var(--gray);
+    font-style: italic;
+}
+
+.search-box .btn {
+    flex-shrink: 0; /* Prevents button from shrinking */
+    padding: 14px 24px;
+    white-space: nowrap;
+}
+
+/* RESPONSIVE SEARCH BAR */
+@media (max-width: 768px) {
+    .filters-container {
+        grid-template-columns: 1fr;
+        padding: 20px;
+    }
+    
+    .search-box {
+        flex-direction: column;
+    }
+    
+    .search-box input,
+    .search-box .btn {
+        width: 100%;
+    }
+    
+    .filter-group {
+        min-width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .search-box input {
+        padding: 12px 16px;
+        font-size: 0.95rem;
+    }
+    
+    .search-box .btn {
+        padding: 12px 20px;
+        font-size: 0.9rem;
+    }
+}
+/* FILTERS CONTAINER */
+.filters-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    border: 1px solid var(--light-gray);
+}
+
+/* FILTER GROUP */
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    min-width: 200px;
+}
+
+.filter-group label {
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+    color: var(--dark);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* SEARCH BOX - IMPROVED SIZING */
+.search-box {
+    grid-column: 1 / -1; /* Spans all columns */
+    display: flex;
+    gap: 12px;
+    align-items: stretch; /* Changed from center to stretch */
+    width: 100%;
+}
+
+.search-box input {
+    flex: 1;
+    min-width: 0;
+    padding: 12px 18px; /* Reduced from 14px 20px */
+    border: 2px solid var(--light-gray);
+    border-radius: 10px; /* Slightly reduced */
+    font-size: 0.95rem; /* Slightly smaller font */
+    transition: var(--transition);
+    background: linear-gradient(to right, #ffffff, #f8f9fc);
+    height: 45px; /* Fixed height */
+}
+
+.search-box input:focus {
+    border-color: var(--primary);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(26, 84, 144, 0.1);
+    background: #ffffff;
+}
+
+.search-box input:hover {
+    border-color: var(--secondary);
+    background: #ffffff;
+}
+
+.search-box input::placeholder {
+    color: var(--gray);
+    font-style: italic;
+}
+
+/* CLEAR BUTTON - MATCHING SIZE */
+.search-box .btn {
+    flex-shrink: 0;
+    padding: 10px 20px; /* Reduced from 14px 24px */
+    white-space: nowrap;
+    height: 45px; /* Match input height */
+    font-size: 0.9rem; /* Smaller font */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px; /* Space between icon and text */
+    min-width: auto; /* Remove any minimum width */
+}
+
+.search-box .btn-outline {
+    background: white;
+    border: 2px solid var(--danger);
+    color: var(--danger);
+    transition: var(--transition);
+    width: auto; /* Remove full width */
+}
+
+.search-box .btn-outline:hover {
+    background: var(--danger);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(229, 62, 62, 0.3);
+}
+
+/* RESPONSIVE SEARCH BAR */
+@media (max-width: 768px) {
+    .filters-container {
+        grid-template-columns: 1fr;
+        padding: 20px;
+    }
+    
+    .search-box {
+        flex-direction: row; /* Keep horizontal on tablet */
+    }
+    
+    .search-box input {
+        min-width: 250px; /* Minimum width for readability */
+    }
+    
+    .filter-group {
+        min-width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .search-box {
+        flex-direction: column; /* Stack on mobile */
+    }
+    
+    .search-box input,
+    .search-box .btn {
+        width: 100%;
+        height: 42px; /* Slightly smaller on mobile */
+    }
+    
+    .search-box input {
+        padding: 10px 16px;
+        font-size: 0.9rem;
+    }
+    
+    .search-box .btn {
+        padding: 10px 18px;
+        font-size: 0.85rem;
+    }
+}
+
+/* Remove the generic .btn width override if it exists */
+.btn {
+    width: auto !important; /* Override any full-width button styles */
+}
+
+/* Exception for buttons that should be full width */
+.form-actions .btn,
+.modal-body .btn {
+    width: auto;
+}
+/* ENHANCED VISIBILITY */
+.search-box input {
+    background: linear-gradient(to right, #ffffff, #f8f9fc);
+    border: 2px solid #cbd5e0;
+}
+
+.search-box input:hover {
+    border-color: var(--secondary);
+    background: #ffffff;
+}
+
+/* CLEAR BUTTON STYLING */
+.search-box .btn-outline {
+    background: white;
+    border: 2px solid var(--danger);
+    color: var(--danger);
+    transition: var(--transition);
+}
+
+.search-box .btn-outline:hover {
+    background: var(--danger);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(229, 62, 62, 0.3);
+}
 /* Stats */
 .stats-container {
     display: grid;
@@ -4592,6 +4866,7 @@ console.log('Hospital Project Management System loaded successfully');
 </script>
 </body>
 </html>
+
 
 
 
